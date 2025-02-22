@@ -31,6 +31,9 @@ myApp.controller('AuthController', ['$scope', 'IndexedDBService', 'AuthService',
       // If you notice the view not updating, you might need to call:
       // $scope.$apply();
     } catch (error) {
+      //add toast
+
+
       console.error('Error adding user:', error);
       // Similarly, call $scope.$apply(); here if necessary.
     }

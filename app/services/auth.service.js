@@ -14,9 +14,4 @@ myApp.service('AuthService', function(IndexedDBService) {
     }
   }
 
-  // this.verifyDetails=function(user){
-  //   if(user.password!==user.confirmPassword){
-  //     return false;
-  //   }
-  // }
 })
