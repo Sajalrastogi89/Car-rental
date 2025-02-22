@@ -1,0 +1,78 @@
+<!-- login-signup.html -->
+<link rel="stylesheet" href="/app/views/auth/auth.css">
+
+
+
+<div class="auth-container" ng-controller="AuthController">
+  <h1 class="logo">EZYCAR</h1>
+  <div class="auth-header">
+    <button ng-click="activeTab = 'login'" 
+            ng-class="{'active': activeTab === 'login'}">
+      Login
+    </button>
+    <button ng-click="activeTab = 'signup'" 
+            ng-class="{'active': activeTab === 'signup'}">
+      Sign Up
+    </button>
+  </div>
+
+  <!-- Login Form -->
+  <div class="auth-form" ng-show="activeTab === 'login'">
+    <form name="loginForm" ng-submit="login()" novalidate>
+      <div class="user-type">
+        <label>
+          <input type="radio" ng-model="loginData.role" value="user" ng-required="true">
+          User
+        </label>
+        <label>
+          <input type="radio" ng-model="loginData.role" value="owner" ng-required="true">
+          Owner
+        </label>
+      </div>
+      <label>Email:
+        <input type="email" ng-model="loginData.email" placeholder="Enter your email" ng-required="true">
+      </label>
+      <label>Password:
+        <input type="password" ng-model="loginData.password" placeholder="Enter your password" ng-required="true">
+      </label>
+      <button type="submit" ng-disabled="loginForm.$invalid">Login</button>
+    </form>
+  </div>
+
+  <!-- Sign Up Form -->
+  <div class="auth-form" ng-show="activeTab === 'signup'">
+    <form name="signupForm" ng-submit="register()" novalidate>
+      <div class="user-type">
+        <label>
+          <input type="radio" ng-model="user.role" value="user" ng-required="true">
+          User
+        </label>
+        <label>
+          <input type="radio" ng-model="user.role" value="owner" ng-required="true">
+          Owner
+        </label>
+      </div>
+      <div class="name-row">
+        <label>First Name:
+          <input type="text" ng-model="user.firstName" placeholder="First Name" ng-required="true">
+        </label>
+        <label>Last Name:
+          <input type="text" ng-model="user.lastName" placeholder="Last Name" ng-required="true">
+        </label>
+      </div>
+      <label>Email:
+        <input type="email" ng-model="user.email" placeholder="Enter your email" ng-required="true">
+      </label>
+      <label>Password:
+        <input type="password" ng-model="user.password" placeholder="Enter your password" ng-required="true" ng-minlength="6">
+      </label>
+      <label>Confirm Password:
+        <input type="password" ng-model="confirmPassword" placeholder="Confirm password" ng-required="true" ng-minlength="6">
+      </label>
+      <label>Phone Number:
+        <input type="tel" ng-model="user.phone" placeholder="Enter your phone number" ng-required="true" ng-pattern="/^\d{10}$/">
+      </label>
+      <button type="submit">Sign Up</button>
+    </form>
+  </div>
+</div>

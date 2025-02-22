@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<head>
+  <meta charset="UTF-8">
+  <title>My AngularJS App</title>
+  <!-- Link to your global styles -->
+  <link rel="stylesheet" href="main.css">
+  <!-- AngularJS from CDN -->
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <!-- Angular UI-Router from CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.0.28/angular-ui-router.min.js"></script>
+  <!-- Your AngularJS Application Scripts -->
+  <script src="app.js"></script>
+  <script src="app/views/auth/auth.controller.js"></script>
+  <script src="app/config/app.routes.js"></script>
+  <script src="app/services/indexedDB.service.js"></script>
+  <script src="app/services/auth.service.js"></script>
+</head>
+<body>
+  <!-- This is where your routed views will be injected -->
+  <div ui-view></div>
+</body>
+</html>
