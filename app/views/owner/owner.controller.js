@@ -1,0 +1,4 @@
+myApp.
+controller('OwnerController',function(){
+  
+})

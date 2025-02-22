@@ -1,4 +1,4 @@
-myApp.controller('AuthController', ['$scope', 'IndexedDBService', 'AuthService',function($scope,IndexedDBService,AuthService) {
+myApp.controller('AuthController', ['$scope','$state', 'IndexedDBService', 'AuthService','ToastService',function($scope,$state,IndexedDBService,AuthService,ToastService) {
   
   // Default active tab
   $scope.activeTab = 'login';
@@ -10,14 +10,42 @@ myApp.controller('AuthController', ['$scope', 'IndexedDBService', 'AuthService',
   $scope.user.role = 'user';
 
   // Login function
-  $scope.login =function() {
-    console.log("Login data:", $scope.loginData);
-    // Implement login logic here
+  $scope.login = async function () {
+    try {
+      let result = await AuthService.checkEmail($scope.loginData.email.toLowerCase());
+      if (!result) {
+        throw new Error("User does not exist");
+      }
+  
+      let passwordValid = await AuthService.checkPassword($scope.loginData.password);
+      if (!passwordValid) {
+        throw new Error("Password is incorrect");
+      }
 
+      let roleValid = await AuthService.checkRole($scope.loginData.role);
+      if(!roleValid) {
+        console.log($scope.loginData.role);
+        throw new Error(`You are not ${$scope.loginData.role}`);
+      }
+
+      if ($scope.loginData.role === 'owner') {
+        $state.go('owner');  
+      } 
+      else if ($scope.loginData.role === 'user') {
+        $state.go('user');  
+      }
+      
+      console.log("Login data:", $scope.loginData);
+      // Implement login logic here
+    } catch (e) { // <-- Ensure 'e' is used correctly
+      ToastService.showToast("error", e.message);
+      console.log(e);
+    }
   };
+  
 
   // Register function
-  $scope.register = async function addUserAsync() {
+  $scope.register = async function () {
     try {
       console.log(12);
       if ($scope.user.role === 'user') {
@@ -25,7 +53,7 @@ myApp.controller('AuthController', ['$scope', 'IndexedDBService', 'AuthService',
       } else if ($scope.user.role === 'owner') {
         $scope.user.verified = false;
       }
-      
+      $scope.user.email=$scope.user.email.toLowerCase();
       const successMessage = await IndexedDBService.addRecord('users',$scope.user);
       console.log(successMessage);
       // If you notice the view not updating, you might need to call:
@@ -35,7 +63,9 @@ myApp.controller('AuthController', ['$scope', 'IndexedDBService', 'AuthService',
 
 
       console.error('Error adding user:', error);
+      console.error(10);
       // Similarly, call $scope.$apply(); here if necessary.
+      ToastService.showToast("error","User Already Exists");
     }
   };
 

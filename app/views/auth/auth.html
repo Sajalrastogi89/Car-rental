@@ -3,7 +3,7 @@
 
 
 
-<div class="auth-container" ng-controller="AuthController">
+<div class="auth-container">
   <h1 class="logo">EZYCAR</h1>
   <div class="auth-header">
     <button ng-click="activeTab = 'login'" 
@@ -67,7 +67,7 @@
         <input type="password" name="password" ng-model="user.password" placeholder="Enter your password" ng-required="true" ng-pattern="/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/">
       </label>
       <div class="warning" ng-show="signupForm.password.$error.pattern && !signupForm.password.$pristine">
-        <ul>
+        <ul class="list">
           <li>Atleast 8 characters long</li>
           <li>Atleast 1 special character, 1 uppercase</li>
           <li>Atleast 1 number, 1 lowercase</li>
@@ -76,7 +76,7 @@
       <label>Confirm Password:
         <input type="password" name="confirmPassword" ng-model="user.confirmPassword" placeholder="Confirm password" ng-required="true" compare-to="user.password">
       </label>
-      <div class="password-warning" ng-show="signupForm.confirmPassword.$error.compareTo && !signupForm.confirmPassword.$pristine">
+      <div class="warning" ng-show="signupForm.confirmPassword.$error.compareTo && !signupForm.confirmPassword.$pristine">
         Password is not matching
       </div>
       <label>Phone Number:

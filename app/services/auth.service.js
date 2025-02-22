@@ -1,17 +1,28 @@
 myApp.service('AuthService', function(IndexedDBService) {
 
+
+  this.val={};
+
+
   this.checkEmail = async function(email) {
     try {
-      const val = await IndexedDBService.getRecord('users', email);
-      if (val) {
-        return false; // Email already exists
+      this.val = await IndexedDBService.getRecord('users', email);
+      if (this.val) {
+        return true; // Email already exists
       } else {
-        return true; // Email does not exist
+        return false; // Email does not exist
       }
     } catch (e) {
-      console.log(e);
-      return false; // In case of error, assume email exists
+      console.log(e); // In case of error, assume email exists
     }
   }
 
+  this.checkPassword = function(password){
+    console.log(password,this.val.password);
+    return password===this.val.password;
+  }
+
+  this.checkRole = function(role){
+    return role===this.val.role;
+  }
 })
