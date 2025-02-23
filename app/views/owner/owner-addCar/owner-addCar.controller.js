@@ -40,14 +40,20 @@ myApp.controller("AddCar", [
     $scope.car = {};
     // Handle image upload for preview purposes
     $scope.uploadImage = function (element) {
-      let file = element.files[0];
+      let file = element.files[0]; // Get the uploaded file
       let fileType = file.type;
+  
       let reader = new FileReader();
       reader.onload = function (event) {
-          $scope.car.image=new Blob([$scope.car.image], { type: $scope.car.fileType });
+          let arrayBuffer = event.target.result; // Get raw data
+          $scope.car.image = new Blob([arrayBuffer], { type: fileType }); // Create valid Blob
+          console.log("✅ Uploaded Blob:", $scope.car.image);
+          // $scope.$apply(); // Update AngularJS UI
       };
-      reader.readAsArrayBuffer(file);
-    };
+  
+      reader.readAsArrayBuffer(file); // Read file as ArrayBuffer
+  };
+  
 
     // Form submission handler
     $scope.addCar = async function () {

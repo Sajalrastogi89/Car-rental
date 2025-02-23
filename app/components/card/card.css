@@ -1,0 +1,70 @@
+.card-link {
+  text-decoration: none;
+}
+.card {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+.card img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+/* Flex layout for card details */
+.card-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Center vertically */
+}
+.details-left {
+  flex: 1;
+}
+.rating {
+  color: #f5a623; /* Gold-ish color for stars */
+  margin-bottom: 5px;
+}
+.rating span {
+  font-size: 18px;
+  margin-right: 2px;
+}
+.details-left h3 {
+  font-size: 20px;
+  margin-bottom: 5px;
+  color: #333;
+}
+.details-left p {
+  font-size: 14px;
+  color: #555;
+  margin: 3px 0;
+}
+/* Fuel container on the right */
+.fuel-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 10px; /* Slightly reduced margin */
+  width: 40%;
+  margin-top: 15px;
+}
+.fuel-icon {
+  display: block;
+  width: 70%;  /* Force reduced icon size */
+  height: auto !important;
+  object-fit: contain;
+}
+.Efuel-icon {
+  display: block;
+  width: 45% !important;  /* Force reduced icon size */
+  height: auto !important;
+  object-fit: contain;
+}
+.fuel-text {
+  font-size: 10px;  /* Smaller text size */
+  color: #555;
+  margin-top: 3px;  /* Reduced margin */
+  text-align: center;
+}

@@ -1,19 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  <navbar></navbar>
-  <div class="container">
-    <div class="filter-section">
-      <label for="city">Current City:</label>
-      <select id="city" ng-model="selectedCity" ng-options="city for city in cities">
-      </select>
+<link rel="stylesheet" href="app\views\user\user-dashboard\user-dashboard.css">
+    <navbar></navbar>
+    <div class="container">
+      <div class="filter-section">
+        <label for="city">Current City:</label>
+        <select
+          id="city"
+          ng-model="selectedCity"
+          ng-options="city for city in cities"
+        ></select>
+      </div>
+      <!-- Heading for the upper cards -->
+      <h2>{{selectedCity}} Cars</h2>
+
+      <div class="card-section">
+        <card-component ng-repeat="car in cars | filter: { city : selectedCity }" car="car"></card-component>
+      </div>
+
+      <div class="show-all-container">
+        <button class="show-all">Show All</button>
+      </div>
+
+      <h2>All Cards</h2>
+
+      <div class="card-section">
+        <card-component ng-repeat="car in cars" car="car"></card-component>
+      </div>
+
+      <div class="show-all-container">
+        <button class="show-all">Show All</button>
+      </div>
+
     </div>
-  </div>
-  abc
-</body>
-</html>
+     <!-- <card-component car="cars[0]"></card-component> -->
+

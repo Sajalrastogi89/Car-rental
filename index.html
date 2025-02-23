@@ -23,8 +23,22 @@
   <script src="app\components\user-navbar\user-navbar.js"></script>
   <script src="app\factories\location.factory.js"></script>
   <script src="app\views\owner\owner-addCar\owner-addCar.controller.js"></script>
+  <script src="app\components\card\card.controller.js"></script>
+  <script src="app\components\card\card.component.js"></script>
 </head>
 <body>
+
+  <div class="loader-overlay" ng-if="$root.isLoading">
+    <div class="loader">
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+  </div>
+  
+  
+  
+
   <!-- This is where your routed views will be injected -->
   <div ui-view></div>
   <div class="toast-container">
