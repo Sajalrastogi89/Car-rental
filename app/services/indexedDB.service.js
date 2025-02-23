@@ -5,7 +5,9 @@ myApp
     const dbVersion = 1;
 
 
-    function openDB() {
+    
+
+    this.openDB=function openDB() {
       if (db) return $q.resolve(db); 
 
       let deferred = $q.defer();
@@ -36,13 +38,11 @@ myApp
       };
 
       return deferred.promise;
-    }
-
-    this.openDB=openDB;
+    };
 
     // Generic CRUD operations defined on `this`
     this.addRecord = function(storeName, record) {
-      return openDB().then(function(db) {
+      return this.openDB().then(function(db) {
         return $q(function(resolve, reject) {
           let tx = db.transaction(storeName, "readwrite");
           let store = tx.objectStore(storeName);
@@ -59,7 +59,7 @@ myApp
     };
 
     this.getRecord = function(storeName, key) {
-      return openDB().then(function(db) {
+      return this.openDB().then(function(db) {
         return $q(function(resolve, reject) {
           let tx = db.transaction(storeName, "readonly");
           let store = tx.objectStore(storeName);
@@ -73,4 +73,41 @@ myApp
         });
       });
     };
+
+    this.getAll = function(storeName) {
+      return this.openDB().then(function(db) {
+        return $q(function(resolve, reject) {
+          let tx = db.transaction(storeName, "readonly");
+          let store = tx.objectStore(storeName);
+          let request = store.getAll();
+          
+          request.onsuccess = function(event) {
+            resolve(event.target.result);
+          };
+          request.onerror = function(event) {
+            reject(event.target.error);
+          };
+        });
+      });
+    };
+    
+
+    this.updateRecord = function(storeName, record) {
+      return this.openDB().then(function(db) {
+        return $q(function(resolve, reject) {
+          let tx = db.transaction(storeName, "readwrite");
+          let store = tx.objectStore(storeName);
+          let request = store.put(record);
+          
+          request.onsuccess = function(event) {
+            resolve(event.target.result);
+          };
+          request.onerror = function(event) {
+            reject(event.target.error);
+          };
+        });
+      });
+    };
+    
+
   });

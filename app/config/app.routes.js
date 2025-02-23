@@ -9,14 +9,19 @@ myApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $
     })
     .state('owner', {
       url: '/owner-dashboard',
-      templateUrl: 'app/views/owner/owner-dashboard.html',
+      templateUrl: 'app/views/owner/owner-dashboard/owner-dashboard.html',
       controller: 'OwnerController'
     })
     .state('user', {
       url: '/user-dashboard',
-      templateUrl: 'app/views/user/user-dashboard.html',
+      templateUrl: 'app/views/user/user-dashboard/user-dashboard.html',
       controller: 'UserController'
-    });
+    })
+    .state('addCar',{
+      url: '/addCar',
+      templateUrl: 'app/views/owner/owner-addCar/owner-addCar.html',
+      controller: 'AddCar'
+    })
 
   // Set the default route
   $urlRouterProvider.otherwise('/auth');

@@ -25,4 +25,9 @@ myApp.service('AuthService', function(IndexedDBService) {
   this.checkRole = function(role){
     return role===this.val.role;
   }
+
+  this.getUserData = function(){
+    console.log(this.val);
+    return this.val;
+  }
 })

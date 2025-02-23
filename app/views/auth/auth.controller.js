@@ -28,10 +28,14 @@ myApp.controller('AuthController', ['$scope','$state', 'IndexedDBService', 'Auth
         throw new Error(`You are not ${$scope.loginData.role}`);
       }
 
+      let userData = AuthService.getUserData();
+
       if ($scope.loginData.role === 'owner') {
+        sessionStorage.setItem('loginData',JSON.stringify(userData));
         $state.go('owner');  
       } 
       else if ($scope.loginData.role === 'user') {
+        sessionStorage.setItem('loginData',JSON.stringify(userData));
         $state.go('user');  
       }
       
