@@ -46,9 +46,7 @@ myApp
     $timeout(() => ($rootScope.isLoading = false), 500);
   }
 }
-
 getAllCars();
-
 
 
   async function getCurrentCity(){
@@ -76,6 +74,40 @@ getAllCars();
     }
   }
   getCurrentCity();
+
+  $scope.currentPageAll = 0; // Tracks the current page
+  $scope.pageSize = 4; // Number of items per page
+  
+  // Function to calculate total pages
+  $scope.numberOfPagesAll = function () {
+    return Math.ceil($scope.cars.length / $scope.pageSize);
+  };
+  
+  // Function to set the current page
+  $scope.setPageAll = function (page) {
+    $scope.currentPageAll = page;
+  };
+  
+
+  $scope.currentPage = 0;
+
+  $scope.$watch('selectedCity', function (newCity, oldCity) {
+    if (newCity !== oldCity) {
+      $rootScope.isLoading=true;
+      $scope.currentPage = 0; 
+      
+       $timeout(function(){
+        $rootScope.isLoading=false;
+       },200)
+    }
+});
+
+
+
+$scope.numberOfPages = function() {
+    return Math.ceil(($scope.cars.filter(car => car.city === $scope.selectedCity)).length / $scope.pageSize);
+};
+
 
 
 

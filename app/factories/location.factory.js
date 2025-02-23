@@ -10,6 +10,7 @@ myApp
 
   return {
     getCityUsingGeolocation: function() {
+      console.log(1);
       var deferred = $q.defer();
 
       if (navigator.geolocation) {

@@ -16,19 +16,30 @@
         <card-component ng-repeat="car in cars | filter: { city : selectedCity }" car="car"></card-component>
       </div>
 
-      <div class="show-all-container">
+      <!-- <div class="show-all-container">
         <button class="show-all">Show All</button>
-      </div>
+      </div> -->
 
-      <h2>All Cards</h2>
+      <h2>All Cars</h2>
 
       <div class="card-section">
-        <card-component ng-repeat="car in cars" car="car"></card-component>
+        <card-component 
+          ng-repeat="car in cars | pagination:(currentPageAll * pageSize):pageSize" 
+          car="car">
+        </card-component>
       </div>
+      
+      <!-- Pagination Controls -->
+      <div class="pagination">
+        <button ng-disabled="currentPageAll == 0" ng-click="currentPageAll = currentPageAll - 1">Previous</button>
+        <span> Page {{ currentPageAll + 1 }} of {{ numberOfPagesAll() }} </span>
+        <button ng-disabled="currentPageAll >= numberOfPagesAll() - 1" ng-click="currentPageAll = currentPageAll + 1">Next</button>
+      </div>
+      
 
-      <div class="show-all-container">
+      <!-- <div class="show-all-container">
         <button class="show-all">Show All</button>
-      </div>
+      </div> -->
 
     </div>
      <!-- <card-component car="cars[0]"></card-component> -->
