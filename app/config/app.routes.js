@@ -10,7 +10,7 @@ myApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $
     .state('owner', {
       url: '/owner-dashboard',
       templateUrl: 'app/views/owner/owner-dashboard/owner-dashboard.html',
-      controller: 'OwnerController'
+      controller: 'OwnerDashboardController'
     })
     .state('user', {
       url: '/user-dashboard',
@@ -21,6 +21,11 @@ myApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $
       url: '/addCar',
       templateUrl: 'app/views/owner/owner-addCar/owner-addCar.html',
       controller: 'AddCar'
+    })
+    .state('carDetails',{
+      url: "/car-details/:id",
+      templateUrl: 'app/views/user/user-car/user-car.html',
+      controller: 'carController'
     })
 
   // Set the default route

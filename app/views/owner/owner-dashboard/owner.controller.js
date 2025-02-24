@@ -1,4 +1,0 @@
-myApp.
-controller('OwnerController',function(){
-  
-})

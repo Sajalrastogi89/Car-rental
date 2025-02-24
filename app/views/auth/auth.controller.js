@@ -14,7 +14,7 @@ myApp.controller('AuthController', ['$scope','$state', 'IndexedDBService', 'Auth
     try {
       let result = await AuthService.checkEmail($scope.loginData.email.toLowerCase());
       if (!result) {
-        throw new Error("User does not exist");
+        throw new Error("User does not exist",result);
       }
   
       let passwordValid = await AuthService.checkPassword($scope.loginData.password);

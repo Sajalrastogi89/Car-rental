@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="app\views\user\user-dashboard\user-dashboard.css">
-    <navbar></navbar>
+    <user-navbar></user-navbar>
     <div class="container">
       <div class="filter-section">
         <label for="city">Current City:</label>
@@ -9,7 +9,6 @@
           ng-options="city for city in cities"
         ></select>
       </div>
-      <!-- Heading for the upper cards -->
       <h2>{{selectedCity}} Cars</h2>
 
       <div class="card-section">
@@ -42,5 +41,4 @@
       </div> -->
 
     </div>
-     <!-- <card-component car="cars[0]"></card-component> -->
 

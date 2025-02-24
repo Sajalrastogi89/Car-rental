@@ -1,4 +1,4 @@
 myApp
-.component('navbar',{
+.component('userNavbar',{
   templateUrl: 'app/components/user-navbar/user-navbar.html'
 })

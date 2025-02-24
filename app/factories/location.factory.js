@@ -17,19 +17,16 @@ myApp
         navigator.geolocation.getCurrentPosition(function(position) {
           var lat = position.coords.latitude;
           var lon = position.coords.longitude;
-          // Build the Nominatim reverse-geocoding API URL
           var url = 'https://nominatim.openstreetmap.org/reverse?lat=' 
                     + lat + '&lon=' + lon + '&format=json';
           
-          // Use $http.get to call the API
+        
           $http.get(url).then(function(response) {
             var data = response.data;
             if (data && data.address) {
-              // Get the city from available properties
               var city = data.address.city || data.address.town || data.address.village;
               var state = data.address.state;
               
-              // Check if the city is in metroCities or if state is "Delhi"
               if ((city && metroCities.indexOf(city) !== -1) || state === "Delhi") {
                 deferred.resolve(city || "Delhi");
               } else {

@@ -47,8 +47,7 @@ myApp.controller("AddCar", [
       reader.onload = function (event) {
           let arrayBuffer = event.target.result; // Get raw data
           $scope.car.image = new Blob([arrayBuffer], { type: fileType }); // Create valid Blob
-          console.log("✅ Uploaded Blob:", $scope.car.image);
-          // $scope.$apply(); // Update AngularJS UI
+          console.log("Uploaded Blob:", $scope.car.image);
       };
   
       reader.readAsArrayBuffer(file); // Read file as ArrayBuffer
@@ -73,13 +72,11 @@ myApp.controller("AddCar", [
         $scope.car.user = user;
 
         const result = await IndexedDBService.addRecord("cars", $scope.car);
+        
         $scope.car = {};
+        $scope.imageUpload=null;
         ToastService.showToast('success','car added successfully');
-        // console.log(result);
-        // console.log($scope.car.image);
-        // console.log("Car details:", $scope.car);
-        // Now, $scope.car includes properties from the dropdowns (selected from arrays)
-        // and features is an array of feature strings.
+     
       } catch (e) {
         ToastService.showToast('error',e.message);
       }

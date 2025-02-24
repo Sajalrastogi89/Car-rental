@@ -1,4 +1,4 @@
-myApp.service('AuthService', function(IndexedDBService) {
+myApp.service('AuthService', ['IndexedDBService',function(IndexedDBService) {
 
 
   this.val={};
@@ -30,4 +30,4 @@ myApp.service('AuthService', function(IndexedDBService) {
     console.log(this.val);
     return this.val;
   }
-})
+}])

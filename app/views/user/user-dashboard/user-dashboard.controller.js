@@ -15,10 +15,12 @@ myApp
   async function getAllCars() {
   try {
     $rootScope.isLoading = true;
-    $scope.cars = await IndexedDBService.getAll("cars");
+
+    let car = await IndexedDBService.getAll("cars");
+    
 
     // Convert blob to URL
-    $scope.cars.forEach(car => {
+    car.forEach(car => {
       if (car.image instanceof Blob) {
         console.log("Valid Blob:", car.image);
         console.log("Blob Type:", car.image.type);
@@ -35,7 +37,9 @@ myApp
       }
     });
     
-    
+    $timeout(function(){
+      $scope.cars=car;
+    })
     
 
     console.log($scope.cars);
@@ -51,7 +55,9 @@ getAllCars();
 
   async function getCurrentCity(){
     try{
-      $rootScope.isLoading = true;
+      $timeout(()=>{
+        $rootScope.isLoading = true;
+      })
       const current= await LocationFactory.getCityUsingGeolocation();
       // console.log(current);
       if(!$scope.cities.includes(current)){
@@ -91,16 +97,22 @@ getAllCars();
 
   $scope.currentPage = 0;
 
-  $scope.$watch('selectedCity', function (newCity, oldCity) {
-    if (newCity !== oldCity) {
-      $rootScope.isLoading=true;
-      $scope.currentPage = 0; 
+//   $scope.$watch('selectedCity', function (newCity, oldCity) {
+//     if (newCity !== oldCity) {
+//       $timeout(()=>{
+//         $rootScope.isLoading=true;
+//       })
       
-       $timeout(function(){
-        $rootScope.isLoading=false;
-       },200)
-    }
-});
+//       $scope.currentPage = 0; 
+//       $scope.$apply(()=>{
+//         $rootScope.isLoading=false;
+//         $scope.selectedCity=newCity;
+//       });
+//       //  $timeout(function(){
+       
+//       //  },200)
+//     }
+// });
 
 
 

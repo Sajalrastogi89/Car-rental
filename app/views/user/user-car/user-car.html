@@ -1,0 +1,62 @@
+<link rel="stylesheet" href="app\views\user\user-car\user-car.css" />
+<navbar></navbar>
+<div class="container">
+  <!-- Car Name Header -->
+  <div class="car-header">
+    <h1>{{ car.name }}</h1>
+  </div>
+
+  <!-- Main Content: Left Details and Right Image with Rating -->
+  <div class="car-content">
+    <!-- Left Column: Car Details -->
+    <div class="details-left">
+      <p><strong>Category:</strong> {{ car.category }}</p>
+      <p><strong>Fuel Type:</strong> {{ car.fuelType }}</p>
+      <p><strong>Base Price:</strong> {{ car.basePrice | currency:"₹" }}</p>
+      <p><strong>Price per km:</strong> {{ car.pricePerKm | currency:"₹" }}</p>
+      <p><strong>Features:</strong></p>
+      <ul>
+        <li ng-repeat="feature in car.features">{{ feature }}</li>
+      </ul>
+      <p><strong>City:</strong> {{ car.city }}</p>
+      <p><strong>Kms Travelled:</strong> {{ car.kmsTravelled }} km</p>
+
+      <form name="carForm" novalidate ng-submit="submitBid()">
+        <div class="date-selection">
+          <label for="startDate"><strong>Start Date:</strong></label>
+          <input
+            type="date"
+            id="startDate"
+            name="startDate"
+            ng-model="car.startDate"
+            ng-attr-min="{{today}}"
+            ng-change="checkDates()"
+            required
+          />
+
+          <label for="endDate"><strong>End Date:</strong></label>
+          <input
+            type="date"
+            id="endDate"
+            name="endDate"
+            ng-model="car.endDate"
+            ng-attr-min="{{minEndDate}}"
+            ng-change="checkDates()"
+            required
+          />
+          <!-- <p style="color: red;" ng-if="isUnavailable">Selected dates are unavailable!</p> -->
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button type="submit" ng-disabled="carForm.$invalid" ng-click="checkAvailability()">Bid Now</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Right Column: Car Image and Rating -->
+    <div class="details-right">
+      <img ng-src="{{ car.image }}" alt="Car Image" />
+    </div>
+  </div>
+</div>

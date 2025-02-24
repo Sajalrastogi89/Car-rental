@@ -2,7 +2,7 @@ myApp
 .service('IndexedDBService', function($q) {
     let db;
     const dbName = "CarUserDB";
-    const dbVersion = 1;
+    const dbVersion = 2;
 
 
     
@@ -26,6 +26,14 @@ myApp
           carStore.createIndex("city", "city", { unique: false });
           carStore.createIndex("user_id", "user_id", { unique: false });
         }
+
+        if(!db.objectStoreNames.contains("biddings")){
+          let biddingStore = db.createObjectStore("biddings",{ keyPath: "id", autoIncrement:true});
+          biddingStore.createIndex("car_id","car_id",{ unique: false });
+          biddingStore.createIndex("user_id","user_id",{ unique: false});
+          biddingStore.createIndex("owner_id","owner_id",{ unique: false});
+        }
+
       };
 
       request.onsuccess = function(event) {
@@ -64,6 +72,7 @@ myApp
           let tx = db.transaction(storeName, "readonly");
           let store = tx.objectStore(storeName);
           let request = store.get(key);
+          console.log(key);
           request.onsuccess = function(event) {
             resolve(event.target.result);
           };
@@ -107,6 +116,24 @@ myApp
           };
         });
       });
+    };
+
+
+    this.getRecordsUsingIndex = function(storeName, indexName, indexValue){
+      return this.openDB().then(function(db){
+        return $q(function(resolve,reject){
+          let tx=db.transaction(storeName,"readonly");
+          let store = tx.objectStore(storeName);
+          let index=store.index(indexName);
+          let getRequest=index.getAll(indexValue);
+          getRequest.onsuccess = function(event){
+              resolve(event.target.result);
+          };
+          getRequest.onerror = function(event){
+            reject(event.target.error);
+          };
+        })
+      })
     };
     
 
