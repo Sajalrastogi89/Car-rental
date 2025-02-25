@@ -48,93 +48,177 @@ myApp
       return deferred.promise;
     };
 
-    // Generic CRUD operations defined on `this`
+    
     this.addRecord = function(storeName, record) {
-      return this.openDB().then(function(db) {
-        return $q(function(resolve, reject) {
+      let deferred=$q.defer();
+      this.openDB().then(function(db) {
           let tx = db.transaction(storeName, "readwrite");
           let store = tx.objectStore(storeName);
           let request = store.add(record);
 
           request.onsuccess = function(event) {
-            resolve(event.target.result);
+            deferred.resolve(event.target.result);
           };
           request.onerror = function(event) {
-            reject(event.target.error);
+            deferred.reject(event.target.error);
           };
-        });
-      });
+        }).catch((e)=>{
+          deferred.reject(e);
+        })
     };
 
     this.getRecord = function(storeName, key) {
-      return this.openDB().then(function(db) {
-        return $q(function(resolve, reject) {
+      let deferred=$q.defer();
+      this.openDB().then(function(db) {
           let tx = db.transaction(storeName, "readonly");
           let store = tx.objectStore(storeName);
           let request = store.get(key);
           console.log(key);
           request.onsuccess = function(event) {
-            resolve(event.target.result);
+            deferred.resolve(event.target.result);
           };
           request.onerror = function(event) {
-            reject(event.target.error);
+            deferred.reject(event.target.error);
           };
-        });
-      });
+      }).catch((e)=>{
+        deferred.reject(e);
+      })
+      return deferred.promise;
     };
 
     this.getAll = function(storeName) {
-      return this.openDB().then(function(db) {
-        return $q(function(resolve, reject) {
+      let deferred=$q.defer();
+      this.openDB().then(function(db) {
           let tx = db.transaction(storeName, "readonly");
           let store = tx.objectStore(storeName);
           let request = store.getAll();
           
           request.onsuccess = function(event) {
-            resolve(event.target.result);
+            deferred.resolve(event.target.result);
           };
           request.onerror = function(event) {
-            reject(event.target.error);
+            deferred.reject(event.target.error);
           };
-        });
-      });
+        })
+        .catch((e)=>{
+          deferred.reject(e);
+        })
+      return deferred.promise;
     };
     
 
     this.updateRecord = function(storeName, record) {
-      return this.openDB().then(function(db) {
-        return $q(function(resolve, reject) {
+      let deferred=$q.defer();
+      this.openDB().then(function(db) {
           let tx = db.transaction(storeName, "readwrite");
           let store = tx.objectStore(storeName);
           let request = store.put(record);
           
           request.onsuccess = function(event) {
-            resolve(event.target.result);
+            deferred.resolve(event.target.result);
           };
           request.onerror = function(event) {
-            reject(event.target.error);
+            deferred.reject(event.target.error);
           };
-        });
-      });
+        }
+        )
+        .catch((e)=>{
+          deferred.reject(e);
+        })
+        return deferred.promise;
     };
 
 
     this.getRecordsUsingIndex = function(storeName, indexName, indexValue){
-      return this.openDB().then(function(db){
-        return $q(function(resolve,reject){
+      let deferred = $q.defer();
+      this.openDB().then(function(db){
           let tx=db.transaction(storeName,"readonly");
           let store = tx.objectStore(storeName);
           let index=store.index(indexName);
           let getRequest=index.getAll(indexValue);
           getRequest.onsuccess = function(event){
-              resolve(event.target.result);
+              deferred.resolve(event.target.result);
           };
           getRequest.onerror = function(event){
-            reject(event.target.error);
+            deferred.reject(event.target.error);
           };
         })
-      })
+        .catch((e)=> deferred.reject(e));
+      return deferred.promise;
     };
+
+    this.getRecordsUsingPagination = function(storeName, pageSize, start){
+      let deferred=$q.defer();
+      console.log(storeName,pageSize,start);
+      this.openDB().then(function(db){
+        let tx=db.transaction(storeName,"readonly");
+        let store=tx.objectStore(storeName);
+        let records=[];
+        let cursorRequest = store.openCursor();
+        cursorRequest.onsuccess = function(event){
+          let cursor=event.target.result;
+          if(!cursor){
+            deferred.resolve(records);
+            return;
+          }
+          if(start>0){
+            cursor.advance(start);
+            start=0;
+          }
+          else if(records.length<pageSize){
+            records.push(cursor.value);
+            cursor.continue();
+          }
+          else{
+            deferred.resolve(records);
+          }
+        }
+        cursorRequest.onerror = function(event){
+          deferred.reject(event.target.error);
+        }
+      }).catch((e)=>{
+        console.log(2);
+        deferred.reject(e);
+      })
+      return deferred.promise;
+    }
+
+    this.getRecordsUsingPaginationWithIndex = function(storeName, indexName, indexValue, pageSize, start){
+      let deferred=$q.defer();
+      this.openDB().then(
+        (function(db){
+          let tx = db.transaction(storeName,"readonly");
+          let store = tx.objectStore(storeName);
+          let index = store.index(indexName);
+          let records=[];
+          let cursorRequest = index.openCursor(IDBKeyRange.only(indexValue));
+          cursorRequest.onsuccess = function(event){
+            let cursor=event.target.result;
+            if(!cursor){
+              deferred.resolve(records);
+              return;
+            }
+            if(start>0){
+              cursor.advance(start);
+              start=0;
+            }
+            else if(records.length<pageSize){
+              records.push(cursor.value);
+              cursor.continue();
+            }
+            else {
+              deferred.resolve(records);
+            }
+          }
+          cursorRequest.onerror = function(event){
+            deferred.reject(event.target.error);
+          }
+        })
+      ).catch((e)=>{
+        deferred.reject(e);
+      })
+      return deferred.promise;
+    }
     
 
   });

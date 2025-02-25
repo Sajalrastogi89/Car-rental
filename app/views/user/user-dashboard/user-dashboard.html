@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="app\views\user\user-dashboard\user-dashboard.css">
+
     <user-navbar></user-navbar>
     <div class="container">
       <div class="filter-section">
@@ -7,38 +7,38 @@
           id="city"
           ng-model="selectedCity"
           ng-options="city for city in cities"
+          ng-change="filterCarUsingSelectedCity()"
         ></select>
       </div>
       <h2>{{selectedCity}} Cars</h2>
 
       <div class="card-section">
-        <card-component ng-repeat="car in cars | filter: { city : selectedCity }" car="car"></card-component>
+        <card-component 
+  ng-repeat="car in carsInSelectedCity" 
+  car="car">
+</card-component>
       </div>
 
-      <!-- <div class="show-all-container">
-        <button class="show-all">Show All</button>
-      </div> -->
 
       <h2>All Cars</h2>
 
       <div class="card-section">
         <card-component 
-          ng-repeat="car in cars | pagination:(currentPageAll * pageSize):pageSize" 
-          car="car">
-        </card-component>
+        ng-repeat="car in cars" 
+        car="car"></card-component>
+      
+
       </div>
       
       <!-- Pagination Controls -->
       <div class="pagination">
-        <button ng-disabled="currentPageAll == 0" ng-click="currentPageAll = currentPageAll - 1">Previous</button>
-        <span> Page {{ currentPageAll + 1 }} of {{ numberOfPagesAll() }} </span>
-        <button ng-disabled="currentPageAll >= numberOfPagesAll() - 1" ng-click="currentPageAll = currentPageAll + 1">Next</button>
+        <button ng-disabled="currentPageAll == 0" ng-click="getNextSetOfCars(currentPageAll-1)">Previous</button>
+        <span> Page {{ currentPageAll + 1 }}</span>
+        <button ng-disabled="!isNextPageAvailable" ng-click="getNextSetOfCars(currentPageAll+1)">Next</button>
       </div>
       
 
-      <!-- <div class="show-all-container">
-        <button class="show-all">Show All</button>
-      </div> -->
+     
 
     </div>
 

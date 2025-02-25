@@ -8,12 +8,12 @@ myApp.service('AuthService', ['IndexedDBService',function(IndexedDBService) {
     try {
       this.val = await IndexedDBService.getRecord('users', email);
       if (this.val) {
-        return true; // Email already exists
+        return true; 
       } else {
-        return false; // Email does not exist
+        return false;  
       }
     } catch (e) {
-      console.log(e); // In case of error, assume email exists
+      console.log(e); 
     }
   }
 

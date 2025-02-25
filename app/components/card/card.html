@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="app\components\card\card.css">
+
 <!-- templates/card.html -->
 <a ui-sref="carDetails({ id: $ctrl.car.id })" class="card-link">
   <div class="card">
@@ -9,16 +9,16 @@
           <!-- Render rating stars dynamically -->
           <span>★</span><span>★</span><span>★</span><span>★</span><span>☆</span>
         </div>
-        <h3>{{$ctrl.car.category}}</h3>
+        <h3>{{$ctrl.car.name}}</h3>
         <p><strong>City:</strong> {{$ctrl.car.city}}</p>
         <p><strong>Base Price:</strong> {{ $ctrl.car.basePrice | currency:"₹" }}</p>
         <p><strong>Price per km:</strong> {{$ctrl.car.pricePerKm | currency:"₹" }}</p>
         <p><strong>Travelled:</strong> {{$ctrl.car.travelled}}km</p>
       </div>
       <div class="fuel-container">
-        <img ng-src="{{$ctrl.fuelPump}}" ng-style="{{$ctrl.fuelPumpStyle}}" alt="fuel pump Image" class="fuel-icon" />
+        <img ng-src="{{$ctrl.car.fuelPump}}" ng-style="$ctrl.car.fuelPumpStyle" alt="Fuel Pump Image" class="fuel-icon" />
         <p class="fuel-text">{{$ctrl.car.fuelType}}</p>
-      </div>
+      </div>      
     </div>
   </div>
 </a>

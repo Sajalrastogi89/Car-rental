@@ -1,9 +1,7 @@
 myApp.controller('AuthController', ['$scope','$state', 'IndexedDBService', 'AuthService','ToastService',function($scope,$state,IndexedDBService,AuthService,ToastService) {
   
-  // Default active tab
   $scope.activeTab = 'login';
   
-  // Models for login and signup
   $scope.loginData = {};
   $scope.user = {};
   $scope.loginData.role = 'user';
