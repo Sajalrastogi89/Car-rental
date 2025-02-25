@@ -32,7 +32,7 @@
       
       <!-- Pagination Controls -->
       <div class="pagination">
-        <button ng-disabled="currentPageAll == 0" ng-click="getNextSetOfCars(currentPageAll-1)">Previous</button>
+        <button ng-disabled="!isPreviousPageAvailable" ng-click="getNextSetOfCars(currentPageAll-1)">Previous</button>
         <span> Page {{ currentPageAll + 1 }}</span>
         <button ng-disabled="!isNextPageAvailable" ng-click="getNextSetOfCars(currentPageAll+1)">Next</button>
       </div>

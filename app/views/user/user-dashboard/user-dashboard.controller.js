@@ -17,6 +17,7 @@ myApp
   $scope.currenPageForSelectedCity = 0;
   $scope.pageSize = 4; 
   $scope.isNextPageAvailable=true;
+  $scope.isPreviousPageAvailable=false;
 
 $scope.init=function(){
   $rootScope.isLoading=true;
@@ -117,6 +118,7 @@ $scope.getCarsInSelectedCity = function(city,currentPage){
 $scope.getNextSetOfCars = function(currentPage){
   $scope.getCars(currentPage).then(
     (car)=>{
+      $scope.isPreviousPageAvailable=currentPage!=0;
       $scope.isNextPageAvailable=car.length==4;
       $scope.cars=car;
     }

@@ -6,6 +6,7 @@ myApp.controller("carController", [
   "$rootScope",
   "ToastService",
   "biddingService",
+  "$q",
   function (
     $stateParams,
     IndexedDBService,
@@ -13,57 +14,60 @@ myApp.controller("carController", [
     $scope,
     $rootScope,
     ToastService,
-    biddingService
+    biddingService,
+    $q
   ) {
-    $scope.today = new Date().toISOString().split("T")[0];
 
     $scope.car = {};
+    $scope.isUnavailable = false;
+    $scope.today = new Date().toISOString().split("T")[0];
 
-    async function getCarById() {
-      try {
-        $timeout(() => {
-          $rootScope.isLoading = true;
-        });
-        console.log($stateParams.id);
-        let carId = parseInt($stateParams.id);
-        const carData = await IndexedDBService.getRecord("cars", carId);
-        carData.image = URL.createObjectURL(carData.image);
-        console.log(carData);
-        $timeout(() => {
-          $scope.car = carData;
-        });
-
-        console.log($stateParams.id);
-      } catch (e) {
-        console.log(e.message);
-      } finally {
-        $timeout(() => {
-          $rootScope.isLoading = false;
-        });
-      }
+    $scope.init = function(){
+      $rootScope.isLoading=true;
+      getCarById().then(
+        (car)=>{
+          $scope.car=car;
+        }
+      ).catch((e)=>{
+        console.log(e);
+      })
+      .finally(()=>{
+        $rootScope.isLoading=false;
+      })
     }
-    getCarById();
+
+    function getCarById() {
+        let deferred=$q.defer();
+        let carId = parseInt($stateParams.id);
+        IndexedDBService.getRecord("cars", carId).then(
+          (car)=>{
+            if(car.image instanceof Blob && car.image.size>0)
+              car.image=URL.createObjectURL(car.image);
+            deferred.resolve(car);
+          }
+        ).catch(
+          (e)=>{
+            console.log(e.message);
+            deferred.reject(car);
+          }
+        );
+        return deferred.promise;
+      }
 
     $scope.checkDates = function () {
       if ($scope.car.startDate) {
-        // Set min date for endDate
         if ($scope.car.endDate && $scope.car.endDate < $scope.car.startDate) {
-          $scope.car.endDate = ""; // Reset endDate if it's before startDate
+          $scope.car.endDate = ""; 
           ToastService.showToast(
             "error",
             "End date must be greater than Start Date"
           );
         }
-        $timeout(function () {
-          $scope.minEndDate = $scope.car.startDate;
-          // ToastService.showToast('error','End date must be greater than Start Date');
-        });
+        $scope.minEndDate = $scope.car.startDate;
       }
-      // $app
     };
 
-    $scope.isUnavailable = false;
-    console.log(1);
+    
    $scope.checkAvailability=async function() {
     try{
       const start = new Date($scope.car.startDate);
@@ -106,5 +110,8 @@ myApp.controller("carController", [
       ToastService.showToast('error',e.message);
     }
     }
+    
+    $scope.init();
+
   },
 ]);
