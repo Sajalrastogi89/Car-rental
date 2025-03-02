@@ -1,0 +1,148 @@
+.container {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.page-heading {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.chat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.chat-item {
+  display: flex;
+  align-items: center; /* Ensures alignment in one line */
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.chat-item:hover {
+  transform: scale(1.02);
+}
+
+.chat-image {
+  flex-shrink: 0;
+  margin-right: 20px;
+}
+
+.chat-image img {
+  width: 100px; /* Profile image size */
+  height: 100px;
+  border-radius: 50%; /* Makes it round */
+  object-fit: cover;
+}
+
+.chat-info {
+  flex: 1;
+  display: flex;
+  align-items: center; /* Aligns profile and details on the same row */
+}
+
+.chat-details {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 columns per row */
+  grid-template-rows: repeat(2, auto); /* 2 rows */
+  gap: 10px 20px;
+  flex: 1; /* Allow it to take remaining space */
+}
+
+.chat-details div {
+  padding: 5px;
+  font-size: 14px;
+  color: #333;
+  background: #f4f4f4;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.chat-details strong {
+  font-weight: 600;
+  color: #000;
+}
+
+.filter-sort-container {
+  display: flex;
+  justify-content: flex-end; /* Aligns dropdowns to the right */
+  gap: 15px; /* Space between filter and sort */
+  margin-bottom: 15px; /* Adds spacing from the list */
+}
+
+.filter-sort-container label {
+  font-weight: bold;
+  margin-right: 5px;
+  padding-top: 8px;
+  padding-bottom: 2px;
+  
+}
+
+.filter-sort-container select {
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background: #fff;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+}
+
+.filter-sort-container select:hover {
+  border-color: #007bff;
+}
+
+.filter-sort-container select:focus {
+  outline: none;
+  border-color: #0056b3;
+  box-shadow: 0px 0px 5px rgba(0, 91, 187, 0.5);
+}
+.upload-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 10px;
+  background: #f4f4f4;
+  border-radius: 5px;
+}
+
+.upload-label {
+  font-weight: bold;
+  color: #333;
+}
+
+.upload-input {
+  padding: 6px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  background: white;
+  transition: 0.3s;
+}
+
+.upload-input:hover {
+  border-color: #007bff;
+}
+
+.upload-input:focus {
+  outline: none;
+  border-color: #0056b3;
+  box-shadow: 0px 0px 5px rgba(0, 91, 187, 0.5);
+}
+
+.chat-data{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}

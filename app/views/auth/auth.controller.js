@@ -1,74 +1,70 @@
-myApp.controller('AuthController', ['$scope','$state', 'IndexedDBService', 'AuthService','ToastService',function($scope,$state,IndexedDBService,AuthService,ToastService) {
-  
-  $scope.activeTab = 'login';
-  
-  $scope.loginData = {};
-  $scope.user = {};
-  $scope.loginData.role = 'user';
-  $scope.user.role = 'user';
+myApp.controller("AuthController", [
+  "$scope",
+  "$state",
+  "IndexedDBService",
+  "ToastService",
+  function ($scope, $state, IndexedDBService, ToastService) {
 
-  // Login function
-  $scope.login = async function () {
-    try {
-      let result = await AuthService.checkEmail($scope.loginData.email.toLowerCase());
-      if (!result) {
-        throw new Error("User does not exist",result);
-      }
-  
-      let passwordValid = await AuthService.checkPassword($scope.loginData.password);
-      if (!passwordValid) {
-        throw new Error("Password is incorrect");
-      }
+    $scope.activeTab = "login";
+    $scope.loginData = {};
+    $scope.user = {};
+    $scope.loginData.role = "user";
+    $scope.user.role = "user";
+    // $scope.loginData.password="";
+    // Login function
+    $scope.login = function () {
+      $scope.checkEmail($scope.loginData.email.toLowerCase())
+        .then((user) => {
+          if(!user){
+            throw new Error("User does not exsist");
+          }
+          console.log(1);
+          if (user.password !== $scope.loginData.password) {
+            throw new Error("Password is not valid");
+          }
+          console.log(2);
+          if (user.role !== $scope.loginData.role) {
+            console.log(user.role, $scope.loginData.role);
+            throw new Error("Role is not valid");
+          }
+          sessionStorage.setItem("loginData", JSON.stringify(user));
+          $state.go(user.role);
+        })
+        .catch((e) => {
+          ToastService.showToast("error", e.message);
+          console.log("User does not exist");
+        });
+    };
 
-      let roleValid = await AuthService.checkRole($scope.loginData.role);
-      if(!roleValid) {
-        console.log($scope.loginData.role);
-        throw new Error(`You are not ${$scope.loginData.role}`);
-      }
-
-      let userData = AuthService.getUserData();
-
-      if ($scope.loginData.role === 'owner') {
-        sessionStorage.setItem('loginData',JSON.stringify(userData));
-        $state.go('owner');  
-      } 
-      else if ($scope.loginData.role === 'user') {
-        sessionStorage.setItem('loginData',JSON.stringify(userData));
-        $state.go('user');  
-      }
-      
-      console.log("Login data:", $scope.loginData);
-      // Implement login logic here
-    } catch (e) { // <-- Ensure 'e' is used correctly
-      ToastService.showToast("error", e.message);
-      console.log(e);
-    }
-  };
-  
-
-  // Register function
-  $scope.register = async function () {
-    try {
-      console.log(12);
-      if ($scope.user.role === 'user') {
+    // Register function
+    $scope.register = function () {
+      if ($scope.user.role === "user") {
         $scope.user.verified = true;
-      } else if ($scope.user.role === 'owner') {
+      } else if ($scope.user.role === "owner") {
         $scope.user.verified = false;
       }
-      $scope.user.email=$scope.user.email.toLowerCase();
-      const successMessage = await IndexedDBService.addRecord('users',$scope.user);
-      console.log(successMessage);
-      // If you notice the view not updating, you might need to call:
-      // $scope.$apply();
-    } catch (error) {
-      //add toast
+      $scope.user.email = $scope.user.email.toLowerCase();
 
+      $scope.checkEmail($scope.user.email)
+        .then((user) => {
+          if(user){
+            throw new Error("User already registered");
+          }
+          console.log($scope.user, 1);
+          return IndexedDBService.addRecord("users", $scope.user);
+        })
+        .then(() => {
+          console.log("User added");
+          ToastService.showToast("success", "User Registered");
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          ToastService.showToast("error", "User Already Exists");
+        });
+    };
 
-      console.error('Error adding user:', error);
-      console.error(10);
-      // Similarly, call $scope.$apply(); here if necessary.
-      ToastService.showToast("error","User Already Exists");
-    }
-  };
-
-}]);
+    $scope.checkEmail = function (email) {
+      return IndexedDBService.getRecord("users", email)
+    };
+  },
+]);

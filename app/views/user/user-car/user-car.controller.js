@@ -1,63 +1,61 @@
 myApp.controller("carController", [
   "$stateParams",
+  "$state",
   "IndexedDBService",
   "$timeout",
   "$scope",
   "$rootScope",
   "ToastService",
-  "biddingService",
   "$q",
+  "blobFactory",
+  "chatService",
   function (
     $stateParams,
+    $state,
     IndexedDBService,
     $timeout,
     $scope,
     $rootScope,
     ToastService,
-    biddingService,
-    $q
+    $q,
+    blobFactory,
+    chatService
   ) {
-
     $scope.car = {};
     $scope.isUnavailable = false;
     $scope.today = new Date().toISOString().split("T")[0];
 
-    $scope.init = function(){
-      $rootScope.isLoading=true;
-      getCarById().then(
-        (car)=>{
-          $scope.car=car;
-        }
-      ).catch((e)=>{
-        console.log(e);
-      })
-      .finally(()=>{
-        $rootScope.isLoading=false;
-      })
-    }
+    $scope.init = function () {
+      $rootScope.isLoading = true;
+      getCarById()
+        .then((car) => {
+          $scope.car = car;
+        })
+        .catch((e) => {
+          console.log(e);
+        })
+        .finally(() => {
+          $rootScope.isLoading = false;
+        });
+    };
 
     function getCarById() {
-        let deferred=$q.defer();
-        let carId = parseInt($stateParams.id);
-        IndexedDBService.getRecord("cars", carId).then(
-          (car)=>{
-            if(car.image instanceof Blob && car.image.size>0)
-              car.image=URL.createObjectURL(car.image);
-            deferred.resolve(car);
-          }
-        ).catch(
-          (e)=>{
-            console.log(e.message);
-            deferred.reject(car);
-          }
-        );
-        return deferred.promise;
-      }
+      let carId = parseInt($stateParams.id);
+      return IndexedDBService.getRecord("cars", carId)
+        .then((car) => {
+          if (car.image instanceof Blob && car.image.size > 0)
+            car.image = URL.createObjectURL(car.image);
+          return car;
+        })
+        .catch((e) => {
+          console.log(e.message);
+        });
+    }
 
     $scope.checkDates = function () {
       if ($scope.car.startDate) {
         if ($scope.car.endDate && $scope.car.endDate < $scope.car.startDate) {
-          $scope.car.endDate = ""; 
+          $scope.car.endDate = "";
           ToastService.showToast(
             "error",
             "End date must be greater than Start Date"
@@ -67,51 +65,56 @@ myApp.controller("carController", [
       }
     };
 
-    
-   $scope.checkAvailability=async function() {
-    try{
+    $scope.checkAvailability = function () {
       const start = new Date($scope.car.startDate);
       const end = new Date($scope.car.endDate);
       if ($scope.car.approved) {
         for (const dateRange of $scope.car.approved) {
-          let minDate = dateRange.min - date;
-          let maxDate = dateRange.max - date;
+          let minDate = dateRange.startDate;
+          let maxDate = dateRange.endDate;
           if (
-            (start >= minDate && start <= maxDate) ||
-            (end >= minDate && end <= maxDate) ||
-            (start <= minDate && end >= maxDate)
+            start < maxDate && end > minDate
           ) {
             console.log("booking is not available");
-            // $timeout(() => {
-            //   $scope.isUnavailable = true;
-            //   $scope.$apply();
-            //   $timeout(() => {
-            //     $scope.isUnavailable = false;
-            //   }, 2000);
-            // });
-            throw new Error("booking is not available");
-          } else {
-            console.log("booking is available");
+            return;
           }
         }
-      } else {
-        console.log("booking is available");
       }
-      user=JSON.parse(sessionStorage.getItem('loginData'));
-      const owner=$scope.car.user;
-      const biddingObject=biddingService.createBiddingObject($scope.car,user,owner);
-      // const user=
+      const user = JSON.parse(sessionStorage.getItem("loginData"));
+      const biddingCar=structuredClone($scope.car);
+      return blobFactory
+        .getImage(biddingCar.image)
+        .then((imageBlob) => {
+          console.log(121);
+          biddingCar.image = imageBlob;
+          const biddingObject = {
+            car: biddingCar,
+            user: user,
+            timestamp: Date.now(),
+            status: 'pending'
+          };
+          return IndexedDBService.addRecord("biddings", biddingObject);
+        })
+        .then(() => {
+          ToastService.showToast("success", "bid successfully added");
+          $state.go("userBiddings");
+          console.log(1234);
+        })
+        .catch(() => {
+          console.log("error adding bid");
+        });
+    };
 
-      await IndexedDBService.addRecord("biddings",biddingObject);
-      ToastService.showToast('success',"bid successfully added");
-      
+    $scope.chat = function(owner_id,car){
+      const user_id=JSON.parse(sessionStorage.getItem('loginData')).email;
+      console.log(owner_id,user_id);
+      chatService.addChat(owner_id,user_id,car).then(()=>{
+          console.log("chat added");
+      }).catch((e)=>{
+          console.log("user-car chat",e);
+      });
     }
-    catch(e){
-      ToastService.showToast('error',e.message);
-    }
-    }
-    
+
     $scope.init();
-
   },
 ]);

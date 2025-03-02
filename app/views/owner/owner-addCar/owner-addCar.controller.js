@@ -51,7 +51,7 @@ myApp.controller("AddCar", [
       };
   
       reader.readAsArrayBuffer(file); // Read file as ArrayBuffer
-  };
+  };  
   
 
     // Form submission handler
@@ -68,8 +68,8 @@ myApp.controller("AddCar", [
         }
 
         const user = JSON.parse(sessionStorage.getItem("loginData"));
-        $scope.car.user_id = user.email;
-        $scope.car.user = user;
+        $scope.car.owner_id = user.email;
+        $scope.car.owner = user;
 
         const result = await IndexedDBService.addRecord("cars", $scope.car);
         

@@ -1,10 +1,7 @@
 myApp.controller('cardController', function () {
   // const vm = this;
   
-  // vm.$onInit = function () {
-  //   vm.updateFuelPump();
-  //   // console.log('Car object:', vm.car);
-  // };
+  // vm.$onInit = 
 
   
 
@@ -18,8 +15,8 @@ myApp.controller('cardController', function () {
   //   }
 // };
 
-  // this.$onInit = () => {
-  //   console.log("Fuel Pump Image:", this.fuelPump);
-  // };
+  this.$onInit = () => {
+    console.log("Fuel Pump", this.link);
+  };
 
 });

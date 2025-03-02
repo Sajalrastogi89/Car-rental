@@ -20,8 +20,10 @@ myApp
           var url = 'https://nominatim.openstreetmap.org/reverse?lat=' 
                     + lat + '&lon=' + lon + '&format=json';
           
-        
+          // var url = "http://ipinfo.io";
+
           $http.get(url).then(function(response) {
+            console.log('response',response);
             var data = response.data;
             if (data && data.address) {
               var city = data.address.city || data.address.town || data.address.village;

@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="app\views\user\user-car\user-car.css" />
-<navbar></navbar>
+<user-navbar></user-navbar>
 <div class="container">
   <!-- Car Name Header -->
   <div class="car-header">
@@ -29,11 +29,11 @@
             id="startDate"
             name="startDate"
             ng-model="car.startDate"
-            ng-attr-min="{{today}}"
+           
             ng-change="checkDates()"
             required
           />
-
+          <!-- ng-attr-min="{{today}}" -->
           <label for="endDate"><strong>End Date:</strong></label>
           <input
             type="date"
@@ -57,6 +57,7 @@
     <!-- Right Column: Car Image and Rating -->
     <div class="details-right">
       <img ng-src="{{ car.image }}" alt="Car Image" />
+      <button ng-click="chat(car.owner.email,car)">chat</button>
     </div>
   </div>
 </div>

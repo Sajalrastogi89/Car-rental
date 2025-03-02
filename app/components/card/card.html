@@ -1,13 +1,11 @@
 
 <!-- templates/card.html -->
-<a ui-sref="carDetails({ id: $ctrl.car.id })" class="card-link">
+<a ui-sref="carDetails({'id':$ctrl.car.id})" class="card-link">
   <div class="card">
     <img ng-src="{{$ctrl.car.image}}" alt="Car Image" />
     <div class="card-details">
       <div class="details-left">
         <div class="rating">
-          <!-- Render rating stars dynamically -->
-          <span>★</span><span>★</span><span>★</span><span>★</span><span>☆</span>
         </div>
         <h3>{{$ctrl.car.name}}</h3>
         <p><strong>City:</strong> {{$ctrl.car.city}}</p>

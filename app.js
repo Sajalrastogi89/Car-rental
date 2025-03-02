@@ -40,9 +40,8 @@ myApp.run(['IndexedDBService',async function(IndexedDBService) {
   //                 city: city,
   //                 features: ["Air Conditioning", "Power Steering", "ABS"],
   //                 image: carImageBlob, // Assign Blob image
-  //                 user_id: "sajal@gmail.com",
-  //                 user: {
-  //                     role: "user",
+  //                 owner: {
+  //                     role: "owner",
   //                     firstName: "Sajal",
   //                     lastName: "Rastogi",
   //                     email: "sajal@gmail.com"

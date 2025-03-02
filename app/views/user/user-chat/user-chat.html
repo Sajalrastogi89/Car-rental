@@ -1,0 +1,47 @@
+<user-navbar></user-navbar> <!-- Navbar Component -->
+
+<div class="chat-container">
+  <!-- Chat List (Left Sidebar) -->
+  <div class="chat-list">
+    <h3>Chats</h3>
+    <ul>
+      <li ng-repeat="chat in chats" ng-click="selectChat(chat)" ng-class="{'selected': chat === selectedChat}">
+        <div class="chat-item">
+          <div class="chat-info">
+            <p class="chat-name">{{ chat.owner.name }} | {{chat.car.name}} | Base Price: {{chat.car.basePrice}}</p>
+            </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Chat Window (Right Side) -->
+  <div class="chat-window">
+    <div ng-if="selectedChat">
+      <div class="chat-header">
+        <h3>Chat with {{ selectedChat.owner.name }}</h3>
+      </div>
+
+      <!-- Messages Container -->
+      <div class="messages">
+        <div ng-repeat="msg in messages | orderBy: -timestamp" class="message" ng-class="{'sent': msg.sender === userEmail, 'received': msg.sender !== userEmail}">
+          <p ng-if="msg.message">{{ msg.message }}</p>
+        </div>
+      </div>
+
+      <!-- Input Field and Send Button -->
+      <div class="chat-input">
+        <input type="text" ng-model="currentMessage.messageText" placeholder="Type a message..." />{{abc.messageText}}
+        <!-- Camera Icon for Image Upload -->
+      
+        <button ng-click="sendMessage(currentMessage.messageText)">Send</button>
+      </div>
+      
+    </div>
+
+    <!-- No Chat Selected -->
+    <div ng-if="!selectedChat" class="no-chat">
+      <p>Select a chat to start messaging</p>
+    </div>
+  </div>
+</div>

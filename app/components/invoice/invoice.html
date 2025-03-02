@@ -1,0 +1,21 @@
+<div class="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Trip Invoice</h2>
+      <span class="close-btn" ng-click="$ctrl.onClose()">&times;</span>
+    </div>
+    <div class="modal-body">
+      <p><strong>Car Name:</strong> {{ $ctrl.booking.car.name }}</p>
+      <p><strong>Model:</strong> {{ $ctrl.booking.car.category }}</p>
+      <p><strong>Start Date:</strong> {{ $ctrl.booking.car.startDate | date:'dd-MM-yyyy' }}</p>
+      <p><strong>End Date:</strong> {{ $ctrl.booking.car.endDate | date:'dd-MM-yyyy' }}</p>
+      <p><strong>Distance Travelled:</strong> {{ $ctrl.booking.distanceTravelled || 0 }} km</p>
+      <p><strong>Base Price:</strong> {{ $ctrl.booking.car.basePrice | currency:"₹" }}</p>
+      <p><strong>Price per Km:</strong> {{ $ctrl.booking.car.pricePerKm | currency:"₹" }}</p>
+      <p><strong>Total Cost:</strong> {{ $ctrl.booking.totalAmount | currency:"₹" }}</p>
+    </div>
+    <div class="modal-footer">
+      <button class="close-btn" ng-click="$ctrl.onClose()">Close</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,41 @@
+.owner-profile {
+  width: 350px;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background: #fff;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+.profile-header {
+  margin-bottom: 15px;
+}
+
+.profile-image {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 3px solid #4CAF50;
+}
+
+.profile-details p {
+  font-size: 16px;
+  margin: 5px 0;
+}
+
+.edit-btn {
+  background: #4CAF50;
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.edit-btn:hover {
+  background: #45a049;
+}

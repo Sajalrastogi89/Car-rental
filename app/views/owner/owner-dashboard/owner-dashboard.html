@@ -1,8 +1,18 @@
-<link rel="stylesheet" href="app\views\owner\owner-dashboard\owner-dashboard.css">
+<link
+  rel="stylesheet"
+  href="app/views/owner/owner-dashboard/owner-dashboard.css"
+/>
 <owner-navbar></owner-navbar>
+
 <div class="container">
-  <h2>Your Cars</h2>
-  <div class="card-section">
-    <card-component ng-repeat="car in cars" car="car"></card-component>
+  <!-- Flex container for title and button -->
+  <div class="header-section">
+    <h2>Your Cars</h2>
+    <a ui-sref="addCar" class="add-car-btn">+ Add Car</a>
   </div>
+<div class="card-section">
+  <a ng-repeat="car in cars" ui-sref="">
+    <card-component car="car"></card-component>
+  </a>
+</div>
 </div>

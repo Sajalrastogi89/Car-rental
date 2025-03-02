@@ -1,3 +1,0 @@
-myApp
-.service("UserDashboardService",function(){
-})

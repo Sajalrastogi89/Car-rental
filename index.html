@@ -6,29 +6,52 @@
   <link rel="stylesheet" href="main.css">
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.0.28/angular-ui-router.min.js"></script>
+
   <script src="app.js"></script>
   <script src="app/config/app.routes.js"></script>
+  <script src="app/services/indexedDB.service.js"></script>
+  <script src="app\services\Bidding.service.js"></script>
   <script src="app/views/auth/auth.controller.js"></script>
   <script src="app\views\user\user-dashboard\user-dashboard.controller.js"></script>
   <script src="app\views\owner\owner-dashboard\owner-dashboard.controller.js"></script>
   <script src="app\views\owner\owner-addCar\owner-addCar.controller.js"></script>
+  <script src="app\views\owner\owner-booking\owner-booking.controller.js"></script>
+  
   <script src="app\views\user\user-car\user-car.controller.js"></script>
-  <script src="app/services/indexedDB.service.js"></script>
-  <script src="app/services/auth.service.js"></script>
-  <script src="app\services\owner-dashboard.service.js"></script>
-  <script src="app\services\bidding.service.js"></script>
+  <script src="app/views/owner/owner-Bidding/owner-bidding.controller.js"></script>
+  <script src="app\views\user\user-bookings\user-bookings.controller.js"></script>
   <script src="app\directives\auth.directive.js"></script>
   <script src="app\factories\toast.factory.js"></script>
   <script src="app\factories\location.factory.js"></script>
+  <script src="app\factories\blob.factory.js"></script>
+  <script src="app\components\invoice\invoice.component.js"></script>
+  <script src="app\components\invoice\invoice.controller.js"></script>
   <script src="app\components\user-navbar\user-navbar.js"></script>
   <script src="app\components\owner-navbar\owner-navbar.js"></script>
   <script src="app\components\card\card.controller.js"></script>
   <script src="app\components\card\card.component.js"></script>
   <script src="app\filters\pagination.js"></script>
+  <script src="app\views\user\user-bidding\user-bidding.controller.js"></script>
+  <script src="app\views\user\user-chat\user-chat.controller.js"></script>
+  <script src="app\views\owner\owner-chat\owner-chat.controller.js"></script>
+  <script src="app\views\owner\owner-profile\owner-profile.controller.js"></script>
+  <script src="app\views\user\user-profile\user-profile.controller.js"></script>
+  <script src="app\services\Booking.service.js"></script>
+  <script src="app\services\Chat.service.js"></script>
+  <link rel="stylesheet" href="app\views\user\user-bidding\user-bidding.css">
   <link rel="stylesheet" href="app\views\user\user-dashboard\user-dashboard.css">
   <link rel="stylesheet" href="app\components\card\card.css">
+  <link rel="stylesheet" href="app/views/owner/owner-Bidding/owner-bidding.css">
+  <link rel="stylesheet" href="app\views\user\user-chat\user-chat.css">
+  <link rel="stylesheet" href="app\views\user\user-bookings\user-bookings.css">
+  <link rel="stylesheet" href="app\views\owner\owner-booking\owner-booking.css">
+  <link rel="stylesheet" href="app/components/invoice/invoice.css">
+  <link rel="stylesheet" href="app\views\owner\owner-profile\owner-profile.css">
+  <link rel="stylesheet" href="app\views\user\user-profile\user-profile.css">
+  <link rel="stylesheet" href="app\views\owner\owner-chat\owner-chat.css">
 </head>
 <body>
+
 
   <div class="loader-overlay" ng-if="$root.isLoading">
     <div class="loader">
