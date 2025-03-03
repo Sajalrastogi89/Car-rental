@@ -2,22 +2,18 @@ myApp.controller("carController", [
   "$stateParams",
   "$state",
   "IndexedDBService",
-  "$timeout",
   "$scope",
   "$rootScope",
   "ToastService",
-  "$q",
   "blobFactory",
   "chatService",
   function (
     $stateParams,
     $state,
     IndexedDBService,
-    $timeout,
     $scope,
     $rootScope,
     ToastService,
-    $q,
     blobFactory,
     chatService
   ) {
@@ -48,7 +44,7 @@ myApp.controller("carController", [
           return car;
         })
         .catch((e) => {
-          console.log(e.message);
+          ToastService.showToast("error", e);
         });
     }
 
@@ -72,16 +68,14 @@ myApp.controller("carController", [
         for (const dateRange of $scope.car.approved) {
           let minDate = dateRange.startDate;
           let maxDate = dateRange.endDate;
-          if (
-            start < maxDate && end > minDate
-          ) {
-            console.log("booking is not available");
+          if (start < maxDate && end > minDate) {
+            ToastService.showToast("error", "booking is not available");
             return;
           }
         }
       }
       const user = JSON.parse(sessionStorage.getItem("loginData"));
-      const biddingCar=structuredClone($scope.car);
+      const biddingCar = structuredClone($scope.car);
       return blobFactory
         .getImage(biddingCar.image)
         .then((imageBlob) => {
@@ -91,29 +85,30 @@ myApp.controller("carController", [
             car: biddingCar,
             user: user,
             timestamp: Date.now(),
-            status: 'pending'
+            status: "pending",
           };
           return IndexedDBService.addRecord("biddings", biddingObject);
         })
         .then(() => {
           ToastService.showToast("success", "bid successfully added");
           $state.go("userBiddings");
-          console.log(1234);
         })
         .catch(() => {
-          console.log("error adding bid");
+          ToastService.showToast("error", e);
         });
     };
 
-    $scope.chat = function(owner_id,car){
-      const user_id=JSON.parse(sessionStorage.getItem('loginData')).email;
-      console.log(owner_id,user_id);
-      chatService.addChat(owner_id,user_id,car).then(()=>{
-          console.log("chat added");
-      }).catch((e)=>{
-          console.log("user-car chat",e);
-      });
-    }
+    $scope.chat = function (owner_id, car) {
+      const user_id = JSON.parse(sessionStorage.getItem("loginData")).email;
+      chatService
+        .addChat(owner_id, user_id, car)
+        .then(() => {
+          $state.go("userChat");
+        })
+        .catch((e) => {
+          ToastService.showToast("error", e);
+        });
+    };
 
     $scope.init();
   },

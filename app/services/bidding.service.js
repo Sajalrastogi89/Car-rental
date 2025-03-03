@@ -1,6 +1,8 @@
 myApp.service("BiddingService", [
   "IndexedDBService",
   function (IndexedDBService) {
+
+    
     this.rejectOverlappingBids = function (carId, carStartDate, carEndDate) {
       return IndexedDBService.getRecordsUsingIndex("biddings", "car_id", carId)
           .then((allBiddingsUsingCarId) => {

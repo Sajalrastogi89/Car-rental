@@ -1,6 +1,5 @@
-myApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+myApp.config(['$stateProvider', '$urlRouterProvider',function($stateProvider, $urlRouterProvider) {
   
-  // Define the state for the login/sign-up page
   $stateProvider
     .state('auth', {
       url: '/auth',
@@ -10,64 +9,124 @@ myApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $
     .state('owner', {
       url: '/owner-dashboard',
       templateUrl: 'app/views/owner/owner-dashboard/owner-dashboard.html',
-      controller: 'OwnerDashboardController'
+      controller: 'OwnerDashboardController',
+      resolve: {
+        auth: ['AuthService', function(AuthService) {
+          return AuthService.requireRole('owner');
+        }]
+      }
     })
     .state('user', {
       url: '/user-dashboard',
       templateUrl: 'app/views/user/user-dashboard/user-dashboard.html',
-      controller: 'UserController'
+      controller: 'UserController',
+      resolve: {
+        auth: ['AuthService', function(AuthService) {
+          return AuthService.requireRole('user');
+        }]
+      }
     })
-    .state('addCar',{
+    .state('addCar', {
       url: '/addCar',
       templateUrl: 'app/views/owner/owner-addCar/owner-addCar.html',
-      controller: 'AddCar'
+      controller: 'AddCar',
+      resolve: {
+        auth: ['AuthService', function(AuthService) {
+          return AuthService.requireRole('owner');
+        }]
+      }
     })
-    .state('carDetails',{
+    .state('carDetails', {
       url: "/car-details/:id",
       templateUrl: 'app/views/user/user-car/user-car.html',
-      controller: 'carController'
+      controller: 'carController',
+      resolve: {
+        auth: ['AuthService', function(AuthService) {
+          return AuthService.requireRole('user');
+        }]
+      }
     })
-    .state('userBiddings',{
+    .state('userBiddings', {
       url: "/user-biddings",
       templateUrl: "app/views/user/user-bidding/user-bidding.html",
-      controller: 'userBiddingController'
+      controller: 'userBiddingController',
+      resolve: {
+        auth: ['AuthService', function(AuthService) {
+          return AuthService.requireRole('user');
+        }]
+      }
     })
-    .state('ownerBiddings',{
+    .state('ownerBiddings', {
       url: "/owner-biddings",
       templateUrl: "app/views/owner/owner-Bidding/owner-bidding.html",
-      controller: 'ownerBiddingController'
+      controller: 'ownerBiddingController',
+      resolve: {
+        auth: ['AuthService', function(AuthService) {
+          return AuthService.requireRole('owner');
+        }]
+      }
     })
-    .state('userBooking',{
+    .state('userBooking', {
       url: "/user-bookings",
       templateUrl: "app/views/user/user-bookings/user-bookings.html",
-      controller: "userBookingController"
+      controller: "userBookingController",
+      resolve: {
+        auth: ['AuthService', function(AuthService) {
+          return AuthService.requireRole('user');
+        }]
+      }
     })
-    .state('ownerBooking',{
+    .state('ownerBooking', {
       url: "/owner-bookings",
       templateUrl: "app/views/owner/owner-booking/owner-booking.html",
-      controller: "ownerBookingController"
+      controller: "ownerBookingController",
+      resolve: {
+        auth: ['AuthService', function(AuthService) {
+          return AuthService.requireRole('owner');
+        }]
+      }
     })
-    .state('ownerProfile',{
+    .state('ownerProfile', {
       url: "/owner-profile",
       templateUrl: "app/views/owner/owner-profile/owner-profile.html",
-      controller: "ownerProfileController"
+      controller: "ownerProfileController",
+      resolve: {
+        auth: ['AuthService', function(AuthService) {
+          return AuthService.requireRole('owner');
+        }]
+      }
     })
-    .state('userProfile',{
+    .state('userProfile', {
       url: "/user-profile",
       templateUrl: "app/views/user/user-profile/user-profile.html",
-      controller: "userProfileController"
+      controller: "userProfileController",
+      resolve: {
+        auth: ['AuthService', function(AuthService) {
+          return AuthService.requireRole('user');
+        }]
+      }
     })
-    .state('userChat',{
+    .state('userChat', {
       url: "/user-chat",
       templateUrl: "app/views/user/user-chat/user-chat.html",
-      controller: "userChatController"
+      controller: "userChatController",
+      resolve: {
+        auth: ['AuthService', function(AuthService) {
+          return AuthService.requireRole('user');
+        }]
+      }
     })
-    .state('ownerChat',{
+    .state('ownerChat', {
       url: "/owner-chat",
       templateUrl: "app/views/owner/owner-chat/owner-chat.html",
-      controller: "ownerChatController"
-    })
-  // Set the default route
+      controller: "ownerChatController",
+      resolve: {
+        auth: ['AuthService', function(AuthService) {
+          return AuthService.requireRole('owner');
+        }]
+      }
+    });
+
   $urlRouterProvider.otherwise('/auth');
 
 }]);

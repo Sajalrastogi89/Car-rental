@@ -54,21 +54,6 @@ myApp.controller("ownerChatController", ["$scope","chatService", function ($scop
     console.log($scope.messageText);
 };
 
-
-  // Upload Image
-  $scope.uploadImage = function(event) {
-    var file = event.target.files[0];
-    if (file && $scope.selectedChat) {
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        $scope.$apply(function() {
-          $scope.selectedChat.messages.push({ sender: "me", image: e.target.result });
-        });
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   $scope.init();
 
 }]);

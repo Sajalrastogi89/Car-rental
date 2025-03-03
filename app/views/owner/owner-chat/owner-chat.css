@@ -8,7 +8,7 @@
 
 /* Chat List (Left Sidebar) */
 .chat-list {
-  width: 25%;
+  width: 96%;
   background: #fff;
   padding: 15px;
   border-right: 1px solid #ddd;
@@ -152,6 +152,10 @@
 
 .upload-btn input {
   display: none; /* Hide the file input */
+}
+
+.chat-profiles{
+  width: 25%;
 }
 
 

@@ -3,12 +3,18 @@ myApp.controller("OwnerDashboardController", [
   "$timeout",
   "$rootScope",
   "IndexedDBService",
-  function ($scope, $timeout, $rootScope,IndexedDBService) {
+  "$q",
+  function ($scope, $timeout, $rootScope,IndexedDBService,$q) {
     $scope.cars = {};
+    $scope.currentPageAll = 0;
+    $scope.pageSize = 6;
+    $scope.isNextPageAvailable = true;
+    $scope.isPreviousPageAvailable = false;
+
 
     $scope.init = function(){
       $rootScope.isLoading = true;
-      $scope.getCars().then(
+      $scope.getCars($scope.currentPageAll).then(
         (allCars)=>{
           $scope.cars=allCars;
           console.log(allCars,12);
@@ -21,10 +27,12 @@ myApp.controller("OwnerDashboardController", [
       })
     }
 
-    $scope.getCars=function() {
+    $scope.getCars=function(currentPage) {
+      const deferred=$q.defer();
       const owner_id = JSON.parse(sessionStorage.getItem("loginData")).email;
       console.log(owner_id,12);
-      return IndexedDBService.getRecordsUsingIndex("cars", "owner_id", owner_id)
+      IndexedDBService.getRecordsUsingPaginationWithIndex("cars", "owner_id", owner_id,$scope.pageSize,
+        currentPage * $scope.pageSize)
         .then((allCars) => {
           console.log(allCars,14);
           allCars.forEach((car) => {
@@ -38,14 +46,30 @@ myApp.controller("OwnerDashboardController", [
             car.fuelPumpStyle = fuelData.style;
           });
           console.log(20);
-          return Promise.resolve(allCars);
+          deferred.resolve(allCars);
         })
         .catch((e) => {
           console.log(15);
-          return Promise.reject(e.message);
+          deferred.reject(e.message);
         });
+        return deferred.promise;
     }
 
+    $scope.getNextSetOfCars = function (currentPage) {
+      $scope.currentPageAll = Number(currentPage);
+      console.log("page");
+      $scope
+        .getCars(currentPage)
+        .then((car) => {
+          $scope.isPreviousPageAvailable = currentPage > 0;
+          $scope.isNextPageAvailable = car.length == 6;
+          $scope.cars = car;
+          console.log("page 1");
+        })
+        .catch((e) => {
+          ToastService.showToast("Unable to fetch cars", e);
+        });
+    };
 
 
     $scope.getFuelPumpData=function(fuelType) {

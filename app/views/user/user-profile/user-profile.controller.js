@@ -1,5 +1,13 @@
-myApp.controller('userProfileController',['$scope',function($scope){
+myApp.controller('userProfileController',['$scope','AuthService',function($scope,AuthService){
 
-  $scope.user=JSON.parse(sessionStorage.getItem('loginData'));
-  console.log($scope.user);
+  
+  //  Retrieving user details from session data - 'loginData'
+  $scope.user=AuthService.getUser();
+
+/**
+ * @description - Remove session data and redirect user to auth page
+ */
+  $scope.logout = function(){
+    AuthService.logout();
+  }
 }])

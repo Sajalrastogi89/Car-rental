@@ -154,6 +154,10 @@
   display: none; /* Hide the file input */
 }
 
+.chat-profiles{
+  width: 25%;
+}
+
 
 /* Responsive */
 @media (max-width: 768px) {

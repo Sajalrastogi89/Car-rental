@@ -1,4 +1,4 @@
-myApp.controller("userChatController", ["$scope","chatService", function ($scope,chatService) {
+myApp.controller("userChatController", ["$scope","chatService","ToastService", function ($scope,chatService,ToastService) {
   // Example chat list
   $scope.chats = [];
   $scope.messages = [];
@@ -15,7 +15,6 @@ myApp.controller("userChatController", ["$scope","chatService", function ($scope
 
   $scope.getAllChats = function(){
     chatService.getChats("user_email").then((AllChats)=>{
-      console.log(AllChats);
       $scope.chats=AllChats;
     }).catch((e)=>{
       console.log(e);
@@ -26,7 +25,6 @@ myApp.controller("userChatController", ["$scope","chatService", function ($scope
   $scope.selectChat = function(chat) {
     $scope.selectedChat = chat;
     chatService.getSelectedChatData(chat.id).then((conversation)=>{
-      console.log(conversation);
       $scope.messages=conversation;
     }).catch((e)=>{
       console.log("selectChat",e);
@@ -35,7 +33,6 @@ myApp.controller("userChatController", ["$scope","chatService", function ($scope
 
   // Send Message
   $scope.sendMessage = function(messageText) {
-    console.log(messageText);
     if (!messageText.trim()) return; // Prevent sending empty messages
 
     let messageData = {
@@ -48,26 +45,8 @@ myApp.controller("userChatController", ["$scope","chatService", function ($scope
     $scope.messages.push(messageData);
     chatService.addNewMessage(messageData);
     $scope.currentMessage.messageText = "";
-
-    // Clear the input field
-    
-    console.log($scope.messageText);
 };
 
-
-  // Upload Image
-  $scope.uploadImage = function(event) {
-    var file = event.target.files[0];
-    if (file && $scope.selectedChat) {
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        $scope.$apply(function() {
-          $scope.selectedChat.messages.push({ sender: "me", image: e.target.result });
-        });
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   $scope.init();
 

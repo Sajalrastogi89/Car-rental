@@ -1,5 +1,9 @@
-myApp.controller('ownerProfileController',['$scope',function($scope){
+myApp.controller('ownerProfileController',['$scope','AuthService',function($scope,AuthService){
 
-  $scope.owner=JSON.parse(sessionStorage.getItem('loginData'));
-  console.log($scope.owner);
+  $scope.owner=AuthService.getUser();
+
+  $scope.logout = function(){
+    AuthService.logout();
+  }
+
 }])
