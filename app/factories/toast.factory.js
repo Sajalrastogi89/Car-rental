@@ -1,9 +1,8 @@
-myApp.factory("ToastService", ['$q', '$rootScope', function ($q, $rootScope) {
+myApp.factory("ToastService", ['$q', '$rootScope','$timeout', function ($q, $rootScope,$timeout) {
   $rootScope.toast = { show: false, message: "", type: "" };
 
   return {
     showToast: function (type, message) {
-      console.log("Showing toast:", type, message);
 
       let deferred = $q.defer();
 
@@ -12,9 +11,9 @@ myApp.factory("ToastService", ['$q', '$rootScope', function ($q, $rootScope) {
       $rootScope.toast.message = message;
       $rootScope.toast.show = true;
 
-      // Hide toast after 3 seconds using Promise-based delay
+      
       let hideToast = new Promise((resolve) => {
-        setTimeout(() => {
+        $timeout(() => {
           $rootScope.toast.show = false;
           resolve();
         }, 3000);

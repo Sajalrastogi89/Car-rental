@@ -1,13 +1,16 @@
-myApp.controller('userProfileController',['$scope','AuthService',function($scope,AuthService){
+myApp.controller("userProfileController", [
+  "$scope",
+  "AuthService",
+  function ($scope, AuthService) {
+    
+    //  Retrieving user details from session data - 'loginData'
+    $scope.user = AuthService.getUser();
 
-  
-  //  Retrieving user details from session data - 'loginData'
-  $scope.user=AuthService.getUser();
-
-/**
- * @description - Remove session data and redirect user to auth page
- */
-  $scope.logout = function(){
-    AuthService.logout();
-  }
-}])
+    /**
+     * @description - Remove session data and redirect user to auth page
+     */
+    $scope.logout = function () {
+      AuthService.logout();
+    };
+  },
+]);

@@ -1,4 +1,4 @@
-<user-navbar></user-navbar> <!-- Navbar Component -->
+<owner-navbar></owner-navbar> <!-- Navbar Component -->
 
 <div class="chat-container">
   <!-- Chat List (Left Sidebar) -->
@@ -8,7 +8,7 @@
       <li ng-repeat="chat in chats" ng-click="selectChat(chat)" ng-class="{'selected': chat === selectedChat}">
         <div class="chat-item">
           <div class="chat-info">
-            <p class="chat-name">{{ chat.owner.name }} | {{chat.car.name}} | Base Price: {{chat.car.basePrice}}</p>
+            <p class="chat-name">{{ chat.user.name }} | {{chat.car.name}} | Base Price: {{chat.car.basePrice}}</p>
             </div>
         </div>
       </li>
@@ -19,7 +19,7 @@
   <div class="chat-window">
     <div ng-if="selectedChat">
       <div class="chat-header">
-        <h3>Chat with {{ selectedChat.owner.name }}</h3>
+        <h3>Chat with {{ selectedChat.user.name }}</h3>
       </div>
 
       <!-- Messages Container -->

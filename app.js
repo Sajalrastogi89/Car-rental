@@ -2,7 +2,7 @@
 const myApp = angular.module('myApp', ['ui.router'
 ]);
 
-myApp.run(['IndexedDBService',async function(IndexedDBService) {
+myApp.run(['IndexedDBService',function(IndexedDBService) {
 
   IndexedDBService.openDB()
     .then(function(db) {
@@ -17,10 +17,10 @@ myApp.run(['IndexedDBService',async function(IndexedDBService) {
   //       "Delhi", "Mumbai", "Bengaluru", "Chennai"];
   
   //     const carModels = [
-  //         { name: "Nexon", category: "SUV", fuelType: "Electric", basePrice: 500, pricePerKm: 15 },
-  //         { name: "Swift", category: "Hatchback", fuelType: "Petrol", basePrice: 300, pricePerKm: 10 },
-  //         { name: "Civic", category: "Sedan", fuelType: "Diesel", basePrice: 600, pricePerKm: 20 },
-  //             { name: "BMW", category: "Sedan", fuelType: "Electric", basePrice: 600, pricePerKm: 20 }
+  //         { name: "Nexon", category: "SUV", fuelType: "Electric", basePrice: 500, pricePerKm: 15, travelled: 100 },
+  //         { name: "Swift", category: "Hatchback", fuelType: "Petrol", basePrice: 300, pricePerKm: 10, travelled: 100  },
+  //         { name: "Civic", category: "Sedan", fuelType: "Diesel", basePrice: 600, pricePerKm: 20, travelled: 100  },
+  //             { name: "BMW", category: "Sedan", fuelType: "Electric", basePrice: 600, pricePerKm: 20, travelled: 100  }
   //     ];
   
   //     // Convert Image File to Blob

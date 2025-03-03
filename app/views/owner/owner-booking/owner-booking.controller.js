@@ -3,30 +3,37 @@ myApp.controller("ownerBookingController", [
   "$rootScope",
   "$q",
   "IndexedDBService",
-  "BookingService",
-  function ($scope, $rootScope, $q, IndexedDBService, BookingService) {
-    $scope.bookings = [];
-    $scope.selectedFilter = false;
+  "ToastService",
+  function ($scope, $rootScope, $q, IndexedDBService,ToastService) {
+
+    $scope.bookings = []; // declare and initialize bookings
+    $scope.selectedFilter = false; // selected filter is for 'in progress' bookings
+    
+    // hardcoded dropdown values
     $scope.filterBooking = {
       "In Progess": false,
       "History": true,
     };
 
+    // this will run when page is loaded
     $scope.init = function () {
       $rootScope.isLoading = true;
       $scope
         .getUserBookings()
         .then((allBookings) => {
           $scope.bookings = allBookings;
-          console.log(allBookings);
           $rootScope.isLoading = false;
         })
         .catch((e) => {
-          console.log(e);
           $rootScope.isLoading = false;
         });
     };
 
+    /**
+     * @description - this will fetch bookings from database and filter it on the basis of accepted
+     * then map image blob to url, update completed status, payment status
+     * and then resolve bids
+     */
     $scope.getUserBookings = function () {
       let deferred = $q.defer();
       const ownerEmail = JSON.parse(sessionStorage.getItem("loginData")).email;
@@ -39,23 +46,32 @@ myApp.controller("ownerBookingController", [
                 booking.car.image = URL.createObjectURL(booking.car.image);
               }
               if (booking.car.endDate < Date.now()) {
-                console.log(booking.car.endDate, Date.now());
                 booking.car.isCompleted = true;
               }
-              booking.paymentStatus=false;
+              if(!('paymentStatus' in booking))
+                booking.paymentStatus=false;
               return booking;
             });
           deferred.resolve(filteredBookings);
         })
         .catch((e) => {
           deferred.reject(e);
-          console.log(e.message);
         });
       return deferred.promise;
     };
 
+
+    /**
+     * @description - This function will check odometer value then calculate distance travelled,
+     * total cost and update database
+     * @param {Number} odometerReading 
+     * @param {Object} booking 
+     */
     $scope.uploadOdometerValue = function (odometerReading, booking) {
       odometerReading = Number(odometerReading);
+      if(odometerReading<booking.car.travelled){
+        throw new Error("Wrong odometer reading");
+      }
       //calculate total distance and cost
       let [distance, cost] = $scope.calculateTripDetails(
         odometerReading,
@@ -72,12 +88,10 @@ myApp.controller("ownerBookingController", [
       IndexedDBService.updateRecord("biddings", updateBooking)
         .then((updatedRecord) => {
           booking.paymentStatus = true;
-          console.log(updatedRecord);
           let car = {
             id: booking.car.id,
             travelled: (booking.car.travelled || 0) + distance,
           };
-          console.log("car object", car, "tavelled", booking.car.travelled);
           return IndexedDBService.updateRecord("cars", car);
         })
         .then((car) => {
@@ -85,11 +99,20 @@ myApp.controller("ownerBookingController", [
         })
         .catch((e) => {
           console.log(e);
+          ToastService.showToast("error",e);
         });
     };
 
+
+    /**
+     * @description - this function will calculate travelled distance and cost and then return it in array
+     * @param {Number} odometerReading 
+     * @param {Object} booking 
+     * @returns - array[travelled,cost]
+     */
     $scope.calculateTripDetails = function (odometerReading, booking) {
       let travelled = odometerReading - Number(booking.car.travelled || 0);
+      
       let days =
         (booking.car.endDate - booking.car.startDate) / (1000 * 60 * 60 * 24);
       let cost =
@@ -98,10 +121,19 @@ myApp.controller("ownerBookingController", [
       return [travelled, cost];
     };
 
+    /**
+     * @description - this will show invoice modal
+     * @param {Object} booking 
+     */
     $scope.openInvoice = function (booking) {
       booking.showInvoice = true;
       console.log("open invoice", booking.showInvoice);
     };
+
+    /**
+     * @description - this will hide invoice modal
+     * @param {Object} booking 
+     */
     $scope.closeInvoice = function (booking) {
       booking.showInvoice = false;
     };

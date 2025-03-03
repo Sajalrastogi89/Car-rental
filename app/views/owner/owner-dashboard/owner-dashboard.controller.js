@@ -1,17 +1,19 @@
 myApp.controller("OwnerDashboardController", [
   "$scope",
-  "$timeout",
   "$rootScope",
   "IndexedDBService",
   "$q",
-  function ($scope, $timeout, $rootScope,IndexedDBService,$q) {
-    $scope.cars = {};
-    $scope.currentPageAll = 0;
-    $scope.pageSize = 6;
-    $scope.isNextPageAvailable = true;
-    $scope.isPreviousPageAvailable = false;
+  'DashboardService',
+  function ($scope, $rootScope,IndexedDBService,$q,DashboardService) {
+    $scope.cars = {}; // declaration and initialization of cars
+    $scope.currentPageAll = 0; // current page number for pagination
+    $scope.pageSize = 6; // number of cars fetched in each page
+    $scope.isNextPageAvailable = true; // status for next page
+    $scope.isPreviousPageAvailable = false; // status for previous page
 
-
+/**
+ * @description - runs when page will be loaded
+ */
     $scope.init = function(){
       $rootScope.isLoading = true;
       $scope.getCars($scope.currentPageAll).then(
@@ -27,34 +29,20 @@ myApp.controller("OwnerDashboardController", [
       })
     }
 
+    /**
+     * @description - this will fetch owner cars according to current page and page size
+     * @param {Number} currentPage 
+     */
     $scope.getCars=function(currentPage) {
-      const deferred=$q.defer();
       const owner_id = JSON.parse(sessionStorage.getItem("loginData")).email;
-      console.log(owner_id,12);
-      IndexedDBService.getRecordsUsingPaginationWithIndex("cars", "owner_id", owner_id,$scope.pageSize,
-        currentPage * $scope.pageSize)
-        .then((allCars) => {
-          console.log(allCars,14);
-          allCars.forEach((car) => {
-            if (car.image instanceof Blob && car.image.size > 0) {
-              car.image = URL.createObjectURL(car.image);
-            } else {
-              console.warn("car.image is not a Blob:", car.image);
-            }
-            const fuelData = $scope.getFuelPumpData(car.fuelType);
-            car.fuelPump = fuelData.icon;
-            car.fuelPumpStyle = fuelData.style;
-          });
-          console.log(20);
-          deferred.resolve(allCars);
-        })
-        .catch((e) => {
-          console.log(15);
-          deferred.reject(e.message);
-        });
-        return deferred.promise;
+      return DashboardService.getCarsData("cars","owner_id",owner_id,$scope.pageSize,currentPage)
     }
 
+
+    /**
+     * @description - this will fetch next or previous set of cars on the basis of
+     * page number
+     */
     $scope.getNextSetOfCars = function (currentPage) {
       $scope.currentPageAll = Number(currentPage);
       console.log("page");
@@ -70,18 +58,6 @@ myApp.controller("OwnerDashboardController", [
           ToastService.showToast("Unable to fetch cars", e);
         });
     };
-
-
-    $scope.getFuelPumpData=function(fuelType) {
-      console.log(fuelType, fuelType === "Electric");
-      return fuelType == "Electric"
-        ? {
-            icon: "assets/img/electric.png",
-            style: { width: "66%", opacity: 0.9 },
-          }
-        : { icon: "assets/img/fuel.png", style: {} };
-    }
-
 
     $scope.init();
 

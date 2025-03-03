@@ -10,24 +10,20 @@ myApp
 
   return {
     getCityUsingGeolocation: function() {
-      console.log(1);
-      var deferred = $q.defer();
+      let deferred = $q.defer();
 
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
-          var lat = position.coords.latitude;
-          var lon = position.coords.longitude;
-          var url = 'https://nominatim.openstreetmap.org/reverse?lat=' 
+          let lat = position.coords.latitude;
+          let lon = position.coords.longitude;
+          let url = 'https://nominatim.openstreetmap.org/reverse?lat=' 
                     + lat + '&lon=' + lon + '&format=json';
-          
-          // var url = "http://ipinfo.io";
 
           $http.get(url).then(function(response) {
-            console.log('response',response);
-            var data = response.data;
+            let data = response.data;
             if (data && data.address) {
-              var city = data.address.city || data.address.town || data.address.village;
-              var state = data.address.state;
+              let city = data.address.city || data.address.town || data.address.village;
+              let state = data.address.state;
               
               if ((city && metroCities.indexOf(city) !== -1) || state === "Delhi") {
                 deferred.resolve(city || "Delhi");

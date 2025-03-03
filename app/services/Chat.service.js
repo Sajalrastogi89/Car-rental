@@ -1,18 +1,26 @@
 myApp.service("chatService", [
   "IndexedDBService",
   "$q",
-  function (IndexedDBService,$q) {
-    this.addChat = function (owner_id, user_id, car) {
+  "ToastService",
+  function (IndexedDBService,$q,ToastService) {
+
+    /**
+     * @description - this will add new chat in chat table with 'Hi' message
+     * @param {String} owner_id 
+     * @param {String} user_id 
+     * @param {Object} car 
+     * @returns {Object}
+     */
+    this.addChat = function (userName,ownerName, owner_id, user_id, car) {
       let chatData = {
-        user: { email: user_id },
-        owner: { email: owner_id, name: car.owner.firstName },
+        user: { email: user_id, name: userName },
+        owner: { email: owner_id, name: ownerName },
         car: car
       };
 
       return IndexedDBService.addRecord("chat", chatData).then((chatId) => {
-        console.log(chatId,1);
         let messageData = {
-          chat_id: chatId, // Auto-generated ID from IndexedDB
+          chat_id: chatId, 
           sender: user_id,
           message: "Hi",
           timestamp: Date.now(),
@@ -21,23 +29,35 @@ myApp.service("chatService", [
         return IndexedDBService.addRecord("conversation", messageData)
       })
       .catch((e)=>{
-        console.log(e);
+        ToastService.showToast("error",e);
       })
     };
 
+    /**
+     * @description - this will get chats related to user from database 
+     * @param {String} indexName 
+     * @returns array of objects
+     */
     this.getChats = function(indexName){
       const indexValue=JSON.parse(sessionStorage.getItem('loginData')).email;
-      console.log(indexName,indexValue,12);
       return IndexedDBService.getRecordsUsingIndex("chat",indexName,indexValue);
     }
 
+    /**
+     * @description - this will fetch convertation related to that chat id
+     * @param {Number} id 
+     * @returns array of objects
+     */
     this.getSelectedChatData = function(id){
-      console.log(id);
       return IndexedDBService.getRecordsUsingIndex("conversation","chat_id",id);
     }
 
+    /**
+     * @description - this will add new message to database
+     * @param {Object} messageData 
+     * @returns {Object|String}
+     */
     this.addNewMessage = function(messageData){
-      console.log(12345);
       let deferred=$q.defer();    
       IndexedDBService.addRecord("conversation", messageData).then((messageData)=>{
         deferred.resolve(messageData);

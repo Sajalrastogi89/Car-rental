@@ -4,25 +4,33 @@ myApp.controller("userBiddingController", [
   "$rootScope",
   "$q",
   function ($scope, IndexedDBService, $rootScope, $q) {
-    $scope.biddings = [];
+    
+    $scope.biddings = []; // declaration and initialization of biddings
 
+    // hardcoded options for dropdown
     $scope.sortBid = {
       basePrice: "Base Price",
       pricePerKm: "Price per Km",
     };
+
+     // hardcoded options for dropdown
     $scope.filterBid = {
       pending: "pending",
       rejected: "rejected",
     };
     $scope.selectedSort = "timestamp"; // Default sorting by timestamp
-    $scope.selectedFilter = "pending";
+    $scope.selectedFilter = "pending"; // Default filting by pending
+
+    /**
+     * @description - executes when page will be loaded
+     * and fetch all the biddings
+     */
     $scope.init = function () {
       $rootScope.isLoading = true;
       $scope
         .getUserBiddings()
         .then((allBiddings) => {
           $scope.biddings = allBiddings;
-          console.log($scope.biddings);
         })
         .catch((e) => {
           console.log(e);
@@ -32,20 +40,26 @@ myApp.controller("userBiddingController", [
         });
     };
 
+
+/**
+ * @description - fetch all the bids from db and filter bids that are not accepted
+ * and map blob to image url and then resolve the bids
+ * @returns {promise}
+ */
     $scope.getUserBiddings = function () {
       let deferred = $q.defer();
       const userEmail = JSON.parse(sessionStorage.getItem("loginData")).email;
       IndexedDBService.getRecordsUsingIndex("biddings", "user_id", userEmail)
         .then((allBiddings) => {
           const filteredBiddings = allBiddings
-            .filter((bid) => bid.status === "pending") // Filter bids where isAccepted is false
+            .filter((bid) => bid.status !== "accepted") // Filter bids where isAccepted is false
             .map((bid) => {
               if (bid.car.image instanceof Blob) {
                 bid.car.image = URL.createObjectURL(bid.car.image);
               }
               return bid;
             });
-          deferred.resolve(allBiddings);
+          deferred.resolve(filteredBiddings);
         })
         .catch((e) => {
           deferred.reject(e);

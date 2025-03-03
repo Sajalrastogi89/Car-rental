@@ -5,38 +5,51 @@ myApp.controller("AuthController", [
   "ToastService",
   function ($scope, $state, IndexedDBService, ToastService) {
 
-    $scope.activeTab = "login";
-    $scope.loginData = {};
-    $scope.user = {};
-    $scope.loginData.role = "user";
-    $scope.user.role = "user";
-    // $scope.loginData.password="";
-    // Login function
+    $scope.activeTab = "login"; // set default page as login page
+
+    $scope.loginData = {}; // declaraction and initialization of loginData for login page
+    $scope.user = {}; // declaraction and initialization of user for sign up page
+
+    $scope.loginData.role = "user"; // default selected role for login page
+    $scope.user.role = "user"; // default selected role for signup page
+    
+
+
+    /**
+     * @description - this function checks email -> password -> role
+     * then store fetched data inside session storage and redirect user to user page
+     * and owner to owner page
+     */
     $scope.login = function () {
+      // check email exsists or not in database
       $scope.checkEmail($scope.loginData.email.toLowerCase())
         .then((user) => {
           if(!user){
             throw new Error("User does not exsist");
           }
-          console.log(1);
+          // check user provided password from stored password
           if (user.password !== $scope.loginData.password) {
             throw new Error("Password is not valid");
           }
-          console.log(2);
+          // check selected role
           if (user.role !== $scope.loginData.role) {
             console.log(user.role, $scope.loginData.role);
             throw new Error("Role is not valid");
           }
+          // store details inside session storage
           sessionStorage.setItem("loginData", JSON.stringify(user));
+          // redirect user according to role
           $state.go(user.role);
         })
         .catch((e) => {
           ToastService.showToast("error", e.message);
-          console.log("User does not exist");
         });
     };
 
     // Register function
+    /**
+     * @description - this will validate user credentials and then store it in database
+     */
     $scope.register = function () {
       if ($scope.user.role === "user") {
         $scope.user.verified = true;
@@ -50,19 +63,21 @@ myApp.controller("AuthController", [
           if(user){
             throw new Error("User already registered");
           }
-          console.log($scope.user, 1);
           return IndexedDBService.addRecord("users", $scope.user);
         })
         .then(() => {
-          console.log("User added");
           ToastService.showToast("success", "User Registered");
         })
         .catch((error) => {
-          console.error("Error:", error);
           ToastService.showToast("error", "User Already Exists");
         });
     };
 
+    /**
+     * @description - this will fetch record from database
+     * @param {String} email 
+     * @returns {Promise}
+     */
     $scope.checkEmail = function (email) {
       return IndexedDBService.getRecord("users", email)
     };

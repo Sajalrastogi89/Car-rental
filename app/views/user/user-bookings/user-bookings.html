@@ -6,14 +6,9 @@
   </div>
 
   <div class="filter-sort-container">
-    <label for="filter">Filter By:</label>
-    <select id="filter" ng-model="selectedFilter">
-      <option ng-repeat="(key, value) in filterBid" value="{{ key }}">{{ value }}</option>
-    </select>
     <!-- Sort Dropdown -->
     <label for="sort">Sort By:</label>
     <select id="sort" ng-model="selectedSort">
-      <option value="timestamp">Recent</option>
       <option ng-repeat="(key, value) in sortBid" value="car.{{ key }}">{{ value }}</option>
     </select>
   </div>

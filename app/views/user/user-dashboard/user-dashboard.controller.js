@@ -1,17 +1,17 @@
 myApp.controller("UserController", [
   "$scope",
   "LocationFactory",
-  "IndexedDBService",
   "ToastService",
   "$rootScope",
   "$q",
+  "DashboardService",
   function (
     $scope,
     LocationFactory,
-    IndexedDBService,
     ToastService,
     $rootScope,
-    $q
+    $q,
+    DashboardService
   ) {
     $scope.cities = [
       "Delhi",
@@ -102,38 +102,19 @@ myApp.controller("UserController", [
      * @description Get cars according to selected city
      * @param {String} city - current city by location or selected city
      * @param {Number} currentPage - for pagination
-     * @returns {Promise} - returns a promise that resolves to the list of cars
+     * @returns {Promise} - returns a promise that resolves to the list of cars of page size
      */
     $scope.getCarsInSelectedCity = function (city, currentPage) {
       const deferred = $q.defer();
-      IndexedDBService.getRecordsUsingPaginationWithIndex(
-        "cars",
-        "city",
-        city,
-        $scope.pageSize,
-        currentPage * $scope.pageSize
-      )
-        .then(function (cars) {
-          // for pagination
-          $scope.isPreviousPageAvailable = currentPage > 0;
-          $scope.isNextPageAvailable = cars.length == 6;
-
-          // convert each blob to temporary url
-          cars.forEach((car) => {
-            if (car.image instanceof Blob && car.image.size > 0) {
-              car.image = URL.createObjectURL(car.image);
-            }
-
-            // assign pump image and style on the basis of fuel type
-            const fuelData = getFuelPumpData(car.fuelType);
-            car.fuelPump = fuelData.icon;
-            car.fuelPumpStyle = fuelData.style;
-          });
-          deferred.resolve(cars);
-        })
-        .catch((e) => {
+      DashboardService.getCarsData("cars","city",city,$scope.pageSize,currentPage).then((cars)=>{
+        $scope.isPreviousPageAvailable = currentPage > 0;
+        $scope.isNextPageAvailable = cars.length == 6;
+        deferred.resolve(cars);
+      }).catch(
+        (e)=>{
           deferred.reject(e);
-        });
+        }
+      )
       return deferred.promise;
     };
 
@@ -162,15 +143,13 @@ myApp.controller("UserController", [
 
     /**
      * @description - This function is used in pagination for fetching cars in selected city in pages
-     * @param {Number} currentPage - This number helps in skipping records using advance operation
+     * @param {Number} currentPage - This number helps in skipping records using advance operation of indexed db
      */
     $scope.getNextSetOfCars = function (currentPage) {
       $scope.currentPageAll = Number(currentPage);
       $scope
         .getCarsInSelectedCity($scope.selectedCity, currentPage)
         .then((car) => {
-          $scope.isPreviousPageAvailable = currentPage > 0;
-          $scope.isNextPageAvailable = car.length == 6;
           $scope.carsInSelectedCity = car;
         })
         .catch((e) => {
@@ -194,22 +173,6 @@ myApp.controller("UserController", [
           ToastService.showToast(e.message);
         });
     };
-
-
-
-    /**
-     * @description Returns fuel pump data based on fuel type
-     * @param {String} fuelType - Type of fuel
-     * @returns {Object} - Object containing icon and style for the fuel pump
-     */
-    function getFuelPumpData(fuelType) {
-      return fuelType == "Electric"
-        ? {
-            icon: "assets/img/electric.png",
-            style: { width: "66%", opacity: 0.9 },
-          }
-        : { icon: "assets/img/fuel.png", style: {} };
-    }
 
     $scope.init();
   },

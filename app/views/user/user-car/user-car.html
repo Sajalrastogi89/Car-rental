@@ -1,3 +1,4 @@
+
 <link rel="stylesheet" href="app\views\user\user-car\user-car.css" />
 <user-navbar></user-navbar>
 <div class="container">
@@ -19,7 +20,7 @@
         <li ng-repeat="feature in car.features">{{ feature }}</li>
       </ul>
       <p><strong>City:</strong> {{ car.city }}</p>
-      <p><strong>Kms Travelled:</strong> {{ car.kmsTravelled }} km</p>
+      <p><strong>Kms Travelled:</strong> {{ car.travelled }} km</p>
 
       <form name="carForm" novalidate ng-submit="submitBid()">
         <div class="date-selection">
@@ -44,7 +45,6 @@
             ng-change="checkDates()"
             required
           />
-          <!-- <p style="color: red;" ng-if="isUnavailable">Selected dates are unavailable!</p> -->
         </div>
 
         <!-- Action Buttons -->
@@ -57,7 +57,7 @@
     <!-- Right Column: Car Image and Rating -->
     <div class="details-right">
       <img ng-src="{{ car.image }}" alt="Car Image" />
-      <button ng-click="chat(car.owner.email,car)">chat</button>
+      <button ng-click="chat(car.owner.firstName,car.owner.email,car)">chat</button>
     </div>
   </div>
 </div>

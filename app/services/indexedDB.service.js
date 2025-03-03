@@ -1,99 +1,130 @@
 myApp.service("IndexedDBService", function ($q) {
   let db;
   const dbName = "CarUserDB";
-  const dbVersion = 7;
+  const dbVersion = 4;
 
+  /**
+   * @description - this function will open database and if version is changed then upgrade
+   * function will be called and previous data will be stored inside oldData object and old data stores
+   * will be deleted and new data stores will be added
+   * @returns db instance
+   */
   this.openDB = function openDB() {
-    console.log(17);
     if (db) return $q.resolve(db);
-
+  
     let deferred = $q.defer();
     let request = indexedDB.open(dbName, dbVersion);
-
+  
     request.onupgradeneeded = function (event) {
       db = event.target.result;
-
-      if (!db.objectStoreNames.contains("users")) {
+      let transaction = event.target.transaction;
+      let storeNames = ["users", "cars", "biddings", "chat", "conversation"];
+      let oldData = {};
+  
+      async.parallel(
+        storeNames.map((storeName) => {
+          return function (callback) {
+            if (db.objectStoreNames.contains(storeName)) {
+              let store = transaction.objectStore(storeName);
+              let getAllRequest = store.getAll();
+  
+              getAllRequest.onsuccess = function (event) {
+                oldData[storeName] = event.target.result;
+                callback(null, oldData[storeName]);
+              };
+  
+              getAllRequest.onerror = function (err) {
+                oldData[storeName] = [];
+                callback(err, null);
+              };
+            } else {
+              callback(null, []);
+            }
+          };
+        }),
+        function (err, results) {
+          if (err) {
+            console.error("Error fetching store data:", err);
+          } else {
+            console.log("Fetched store data:", results);
+          }
+          storeNames.forEach((store) => {
+            if (db.objectStoreNames.contains(store)) db.deleteObjectStore(store);
+          });
+          createStores();
+        }
+      );
+  
+      function createStores() {
         let userStore = db.createObjectStore("users", { keyPath: "email" });
         userStore.createIndex("role", "role", { unique: false });
-      }
-
-      if (!db.objectStoreNames.contains("cars")) {
-        let carStore = db.createObjectStore("cars", {
-          keyPath: "id",
-          autoIncrement: true,
-        });
+  
+        let carStore = db.createObjectStore("cars", { keyPath: "id", autoIncrement: true });
         carStore.createIndex("city", "city", { unique: false });
         carStore.createIndex("owner_id", "owner.email", { unique: false });
-      }
-
-      if (!db.objectStoreNames.contains("biddings")) {
-        let biddingStore = db.createObjectStore("biddings", {
-          keyPath: "id",
-          autoIncrement: true,
-        });
+  
+        let biddingStore = db.createObjectStore("biddings", { keyPath: "id", autoIncrement: true });
         biddingStore.createIndex("car_id", "car.id", { unique: false });
         biddingStore.createIndex("user_id", "user.email", { unique: false });
-        biddingStore.createIndex("owner_id", "car.owner.email", {
-          unique: false,
-        });
-      }
-
-     
-      if (!db.objectStoreNames.contains("chat")) {
-        let chatStore = db.createObjectStore("chat", {
-          keyPath: "id",
-          autoIncrement: true,
-        });
+        biddingStore.createIndex("owner_id", "car.owner.email", { unique: false });
+  
+        let chatStore = db.createObjectStore("chat", { keyPath: "id", autoIncrement: true });
         chatStore.createIndex("user_email", "user.email", { unique: false });
-        chatStore.createIndex("owner_email", "owner.email", {
-          unique: false,
-        });
-      }
-
-      // Create Conversation Store
-      if (!db.objectStoreNames.contains("conversation")) {
-        let conversationStore = db.createObjectStore("conversation", {
-          keyPath: "id",
-          autoIncrement: true,
-        });
+        chatStore.createIndex("owner_email", "owner.email", { unique: false });
+  
+        let conversationStore = db.createObjectStore("conversation", { keyPath: "id", autoIncrement: true });
         conversationStore.createIndex("chat_id", "chat_id", { unique: false });
+  
       }
     };
-
+  
     request.onsuccess = function (event) {
       db = event.target.result;
       deferred.resolve(db);
     };
-
+  
     request.onerror = function (event) {
       deferred.reject(event.target.error);
     };
-
+  
     return deferred.promise;
   };
-
+  
+  
+  
+  
+  
+  
+/**
+ * @description - this function will add records inside database
+ * @param {String} storeName 
+ * @param {Object} record 
+ * @returns {Object}
+ */
   this.addRecord = function (storeName, record) {
     return this.openDB().then(function (db) {
-      console.log(18);
       let tx = db.transaction(storeName, "readwrite");
       let store = tx.objectStore(storeName);
       return new Promise((resolve, reject) => {
-        console.log(19);
         let request = store.add(record);
 
         request.onsuccess = function (event) {
-          console.log(20);
           resolve(event.target.result);
         };
         request.onerror = function (event) {
-          console.log(21);
           reject(event.target.error);
         };
       });
     });
   };
 
+
+ /**
+ * @description - this function will retrieve records inside database
+ * @param {String} storeName 
+ * @param {Integer} record 
+ * @returns {Object}
+ */
   this.getRecord = function (storeName, key) {
     return this.openDB().then(function (db) {
       let tx = db.transaction(storeName, "readonly");
@@ -111,6 +142,12 @@ myApp.service("IndexedDBService", function ($q) {
     });
   };
 
+
+  /**
+   * @description - this will fetch all records from database
+   * @param {String} storeName 
+   * @returns 
+   */
   this.getAll = function (storeName) {
     return this.openDB().then(function (db) {
       let tx = db.transaction(storeName, "readonly");
@@ -127,6 +164,13 @@ myApp.service("IndexedDBService", function ($q) {
     });
   };
 
+
+  /**
+   * @description - This will update existing record
+   * @param {String} storeName 
+   * @param {Object} record 
+   * @returns {Object} updated record
+   */
   this.updateRecord = function (storeName, record) {
     return this.openDB().then(function (db) {
       let tx = db.transaction(storeName, "readwrite");
@@ -155,6 +199,14 @@ myApp.service("IndexedDBService", function ($q) {
     });
   };
 
+
+  /**
+   * @description - this will fetch records of a particular index
+   * @param {String} storeName 
+   * @param {String} indexName 
+   * @param {*} indexValue 
+   * @returns - array of objects
+   */
   this.getRecordsUsingIndex = function (storeName, indexName, indexValue) {
     return this.openDB().then(function (db) {
       console.log(16);
@@ -176,6 +228,13 @@ myApp.service("IndexedDBService", function ($q) {
     });
   };
 
+  /**
+   * @description - this will fetch fixed number of records
+   * @param {String} storeName 
+   * @param {Number} pageSize 
+   * @param {Number} start 
+   * @returns - array of objects
+   */
   this.getRecordsUsingPagination = function (storeName, pageSize, start) {
     return this.openDB().then(function (db) {
       let tx = db.transaction(storeName, "readonly");
@@ -206,6 +265,16 @@ myApp.service("IndexedDBService", function ($q) {
     });
   };
 
+
+  /**
+   * @description - this will fetch records form table on particular index with pagination
+   * @param {String} storeName 
+   * @param {String} indexName 
+   * @param {*} indexValue 
+   * @param {Number} pageSize 
+   * @param {Number} start 
+   * @returns - array of objects
+   */
   this.getRecordsUsingPaginationWithIndex = function (
     storeName,
     indexName,

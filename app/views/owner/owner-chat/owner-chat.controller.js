@@ -1,18 +1,24 @@
 myApp.controller("ownerChatController", ["$scope","chatService", function ($scope,chatService) {
   // Example chat list
-  $scope.chats = [];
-  $scope.messages = [];
-  $scope.newMessage = "";
-  $scope.messageText="";
-  $scope.ownerEmail=JSON.parse(sessionStorage.getItem('loginData')).email;
-  $scope.currentMessage={};
-  $scope.currentMessage.messageText = "";
+
+  $scope.chats = []; // store all chats related to that user
+  $scope.messages = []; // store all messages for selected chat
+  $scope.messageText=""; 
+  $scope.ownerEmail=JSON.parse(sessionStorage.getItem('loginData')).email; // fetch owner email from session storage
+  $scope.currentMessage={}; // object for storing input message
+  $scope.currentMessage.messageText = ""; // initialization of message text
 
 
+  /**
+   * @description - execute when page will be loaded
+   */
   $scope.init = function(){
     $scope.getAllChats();
   }
 
+  /**
+   * @description - fetch all chats associated with owner email
+   */
   $scope.getAllChats = function(){
     chatService.getChats("owner_email").then((AllChats)=>{
       console.log(AllChats);
@@ -22,8 +28,12 @@ myApp.controller("ownerChatController", ["$scope","chatService", function ($scop
     })
   }
 
-  // Select Chat
+  /**
+   * @description - fetch conversation for selected chat
+   * @param {Object} chat 
+   */
   $scope.selectChat = function(chat) {
+    console.log(chat);
     $scope.selectedChat = chat;
     chatService.getSelectedChatData(chat.id).then((conversation)=>{
       console.log(conversation);
@@ -33,13 +43,16 @@ myApp.controller("ownerChatController", ["$scope","chatService", function ($scop
     })
   };
 
-  // Send Message
+  /**
+   * @description - store message data inside table and update view using two way binding
+   * @param {String} messageText 
+   */
   $scope.sendMessage = function(messageText) {
     console.log(messageText);
-    if (!messageText.trim()) return; // Prevent sending empty messages
+    if (!messageText.trim()) return; 
 
     let messageData = {
-      chat_id: $scope.selectedChat.id, // Auto-generated ID from IndexedDB
+      chat_id: $scope.selectedChat.id, 
       sender: $scope.selectedChat.owner.email,
       message: messageText,
       timestamp: Date.now(),
@@ -51,7 +64,6 @@ myApp.controller("ownerChatController", ["$scope","chatService", function ($scop
 
     // Clear the input field
     
-    console.log($scope.messageText);
 };
 
   $scope.init();

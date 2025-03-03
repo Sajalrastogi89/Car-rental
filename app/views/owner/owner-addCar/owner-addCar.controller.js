@@ -1,11 +1,16 @@
 myApp.controller("AddCar", [
   "$scope",
-  "$timeout",
   "IndexedDBService",
   "ToastService",
-  function ($scope, $timeout, IndexedDBService,ToastService) {
+  function ($scope, IndexedDBService, ToastService) {
+
+    // Predefined categories of cars
     $scope.categories = ["Sedan", "SUV", "Hatchback", "Convertible"];
+    
+    // Predefined fuel types
     $scope.fuelTypes = ["Petrol", "Diesel", "Electric"];
+    
+    // Predefined list of cities
     $scope.cities = [
       "Delhi",
       "Mumbai",
@@ -37,26 +42,30 @@ myApp.controller("AddCar", [
       "Mysore",
       "Varanasi",
     ];
+
+    // Initialize car object
     $scope.car = {};
-    // Handle image upload for preview purposes
+
+    /**
+     * Handles image upload and converts it to a Blob
+     * @param {*} element - The input element containing the file
+     */
     $scope.uploadImage = function (element) {
       let file = element.files[0]; // Get the uploaded file
-      let fileType = file.type;
+      let fileType = file.type; // Get the file type
   
       let reader = new FileReader();
       reader.onload = function (event) {
           let arrayBuffer = event.target.result; // Get raw data
           $scope.car.image = new Blob([arrayBuffer], { type: fileType }); // Create valid Blob
-          console.log("Uploaded Blob:", $scope.car.image);
       };
   
       reader.readAsArrayBuffer(file); // Read file as ArrayBuffer
-  };  
-  
+    };  
 
     // Form submission handler
-    $scope.addCar = async function () {
-      try {
+    $scope.addCar = function () {
+        // Process car features, split by new lines and filter out empty lines
         if ($scope.car.features) {
           $scope.car.features = $scope.car.features
             .split(/\r?\n/)
@@ -67,19 +76,18 @@ myApp.controller("AddCar", [
           $scope.car.features = [];
         }
 
+        // Get user data from session storage
         const user = JSON.parse(sessionStorage.getItem("loginData"));
-        $scope.car.owner_id = user.email;
-        $scope.car.owner = user;
+        $scope.car.owner_id = user.email; // Set owner ID
+        $scope.car.owner = user; // Set owner details
 
-        const result = await IndexedDBService.addRecord("cars", $scope.car);
-        
-        $scope.car = {};
-        $scope.imageUpload=null;
-        ToastService.showToast('success','car added successfully');
-     
-      } catch (e) {
-        ToastService.showToast('error',e.message);
-      }
+        // Add car record to IndexedDB
+        IndexedDBService.addRecord("cars", $scope.car).then(() => {
+          $scope.car = {}; // Reset car object
+          ToastService.showToast('success', 'Car added successfully'); // Show success toast
+        }).catch((e) => {
+          ToastService.showToast('error', e); // Show error toast
+        });
     };
   },
 ]);

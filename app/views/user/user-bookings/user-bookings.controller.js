@@ -1,13 +1,21 @@
 myApp.controller('userBookingController',["IndexedDBService","$scope","$rootScope","$q",function(IndexedDBService,$scope,$rootScope,$q){
 
 
-  $scope.bookings=[];
+  $scope.bookings=[]; // declaration and initialization for storing bookings
+$scope.selectedSort = "car.startDate"
+$scope.sortBid={
+  startDate: "recent",
+  basePrice: "base price"
+}
 
-
+  /**
+   * @description - this will run when page loaded
+   */
   $scope.init = function(){
   $rootScope.isLoading=true;
   $scope.getUserBookings().then(
     (allBookings)=>{
+      console.log(allBookings);
       $scope.bookings=allBookings;
       $rootScope.isLoading=false;
     }
@@ -17,6 +25,11 @@ myApp.controller('userBookingController',["IndexedDBService","$scope","$rootScop
   });
   }
 
+
+  /**
+   * @description - this will fetch all the bookings from database
+   * and convert image blob to temporary image url
+   */
   $scope.getUserBookings = function () {
     let deferred = $q.defer();
     const userEmail = JSON.parse(sessionStorage.getItem("loginData")).email;
