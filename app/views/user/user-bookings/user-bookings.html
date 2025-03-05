@@ -1,5 +1,5 @@
 <user-navbar></user-navbar>
-<div class="container">
+<div class="container" ng-init="init()">
   <!-- Page Heading -->
   <div class="page-heading">
     <h1>Bookings</h1>
@@ -13,7 +13,8 @@
     </select>
   </div>
   <!-- Chat List -->
-  <div class="chat-list">
+  <div class="parent">
+  <div class="chat-list" ng-hide="isLoading">
     <!-- Use ng-repeat to dynamically generate bidding items -->
     <div class="chat-item" 
          ng-repeat="booking in bookings | filter: selectedFilter | orderBy: selectedSort">
@@ -31,5 +32,9 @@
         </div>   
       </div>
     </div>
+  </div>
+  <div class="child" ng-show="isLoading">
+    <img src="assets\gifs\loader.gif" alt="loader" />
+  </div>
   </div>
 </div>

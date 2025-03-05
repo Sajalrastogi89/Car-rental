@@ -1,27 +1,49 @@
-myApp.factory("ToastService", ['$q', '$rootScope','$timeout', function ($q, $rootScope,$timeout) {
-  $rootScope.toast = { show: false, message: "", type: "" };
+myApp.factory("ToastService", [function () {
 
-  return {
-    showToast: function (type, message) {
+  let factory={};
 
-      let deferred = $q.defer();
-
-      // Set toast properties
-      $rootScope.toast.type = type;
-      $rootScope.toast.message = message;
-      $rootScope.toast.show = true;
-
-      
-      let hideToast = new Promise((resolve) => {
-        $timeout(() => {
-          $rootScope.toast.show = false;
-          resolve();
-        }, 3000);
-      });
-
-      hideToast.then(() => deferred.resolve()); // Resolve promise after hiding toast
-
-      return deferred.promise; // Return the promise
-    }
+  const defaultOptions={
+    close: true,
+    gravity: 'top',
+    position: 'right',
+    stopOnFocus: true
   };
+
+  factory.onSuccess = function(message,time){
+    Toastify({
+      ...defaultOptions,
+      duration: time,
+      text: message,
+      backgroundColor: '#4caf50'
+    }).showToast();
+  }
+
+  factory.error = function(message,time){
+    Toastify({
+      ...defaultOptions,
+      duration: time,
+      text: message,
+      backgroundColor: '#f44336'
+    }).showToast();
+  }
+
+  factory.success = function(message,time){
+    Toastify({
+      ...defaultOptions,
+      duration: time,
+      text: message,
+      backgroundColor: '#2196f3'
+    }).showToast();
+  }
+
+  factory.info = function(message,time){
+    Toastify({
+      ...defaultOptions,
+      duration: time,
+      text: message,
+      backgroundColor: '#4caf50'
+    }).showToast();
+  }
+
+  return factory;
 }]);

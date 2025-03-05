@@ -25,7 +25,7 @@ myApp.controller("userChatController", ["$scope","chatService","ToastService", f
       $scope.chats=AllChats;
     }).catch((e)=>{
       console.log(e);
-      ToastService.showToast("error",e);
+      ToastService.error(e,3000);
     })
   }
 
@@ -39,7 +39,7 @@ myApp.controller("userChatController", ["$scope","chatService","ToastService", f
       $scope.messages=conversation;
     }).catch((e)=>{
       console.log("selectChat",e);
-      ToastService.showToast("error",e);
+      ToastService.error(e,3000);
     })
   };
 
@@ -59,11 +59,9 @@ myApp.controller("userChatController", ["$scope","chatService","ToastService", f
     };
 
     $scope.messages.push(messageData);
-    chatService.addNewMessage(messageData);
     $scope.currentMessage.messageText = "";
+    chatService.addNewMessage(messageData);
 };
 
-
-  $scope.init();
 
 }]);

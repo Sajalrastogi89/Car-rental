@@ -1,0 +1,60 @@
+<owner-navbar></owner-navbar>
+
+<div class="container" ng-init="init()">
+  <h1 class="page-title">Business Analytics</h1>
+
+  <!-- Loading indicator -->
+  <div class="loader-container" ng-show="isLoading">
+    <img src="assets/gifs/loader.gif" alt="Loading..." class="loader-image" />
+  </div>
+
+  <!-- Analytics content - only shown when not loading -->
+  <div class="analytics-content" ng-hide="isLoading">
+    <!-- Revenue Section -->
+    <div class="analytics-section">
+      <h2 class="section-title">Revenue Analytics</h2>
+      <div class="chart-row">
+        <div class="chart-container">
+          <h3>Earnings per City</h3>
+          <canvas id="earningCityChart"></canvas>
+        </div>
+        <div class="chart-container">
+          <h3>Earnings per Car Category</h3>
+          <canvas id="earningCategoryChart"></canvas>
+        </div>
+       
+      </div>
+    </div>
+
+    <!-- Distance Section -->
+    <div class="analytics-section">
+      <h2 class="section-title">Distance Analytics</h2>
+      <div class="chart-row">
+        <div class="chart-container">
+          <h3>Distance Traveled per Car Category</h3>
+          <canvas id="travelCategoryChart"></canvas>
+        </div>
+        <div class="chart-container">
+          <h3>Distance Traveled per City</h3>
+          <canvas id="travelCityChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Performance Section -->
+    <div class="analytics-section">
+      <h2 class="section-title">Performance Analytics</h2>
+      <div class="chart-row">
+        <div class="chart-container">
+          <h3>Highest Traveled Car Category per City</h3>
+          <canvas id="highestTravelledCategoryChart"></canvas>
+        </div>
+        <div class="chart-container">
+          <h3>Highest Earning Car Category per City</h3>
+          <canvas id="highestBidCategoryChart"></canvas>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>

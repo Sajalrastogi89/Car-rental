@@ -1,5 +1,5 @@
 <owner-navbar></owner-navbar>
-<div class="container">
+<div class="container" ng-init="init()">
   <!-- Page Heading -->
   <div class="page-heading">
     <h1>Biddings</h1>
@@ -17,7 +17,8 @@
       <option value="car.basePrice">Base Price (Low to High)</option>
     </select>
   </div>
-  <div class="chat-list">
+  <div class="parent">
+  <div class="chat-list" ng-hide="isLoading">
     <!-- Use ng-repeat with filters -->
     <div class="chat-item" 
          ng-repeat="bid in biddings 
@@ -45,4 +46,8 @@
       </div>
     </div>
   </div>
+  <div class="child" ng-show="isLoading">
+    <img src="assets\gifs\loader.gif" alt="loader" />
+  </div>
+</div>
 </div>

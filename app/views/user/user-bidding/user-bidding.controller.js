@@ -1,10 +1,8 @@
 myApp.controller("userBiddingController", [
   "$scope",
   "IndexedDBService",
-  "$rootScope",
   "$q",
-  function ($scope, IndexedDBService, $rootScope, $q) {
-    
+  function ($scope, IndexedDBService, $q) {
     $scope.biddings = []; // declaration and initialization of biddings
 
     // hardcoded options for dropdown
@@ -13,7 +11,7 @@ myApp.controller("userBiddingController", [
       pricePerKm: "Price per Km",
     };
 
-     // hardcoded options for dropdown
+    // hardcoded options for dropdown
     $scope.filterBid = {
       pending: "pending",
       rejected: "rejected",
@@ -21,12 +19,14 @@ myApp.controller("userBiddingController", [
     $scope.selectedSort = "timestamp"; // Default sorting by timestamp
     $scope.selectedFilter = "pending"; // Default filting by pending
 
+
     /**
      * @description - executes when page will be loaded
      * and fetch all the biddings
      */
+
     $scope.init = function () {
-      $rootScope.isLoading = true;
+      $scope.isLoading = true;
       $scope
         .getUserBiddings()
         .then((allBiddings) => {
@@ -36,16 +36,15 @@ myApp.controller("userBiddingController", [
           console.log(e);
         })
         .finally(() => {
-          $rootScope.isLoading = false;
+          $scope.isLoading = false;
         });
     };
 
-
-/**
- * @description - fetch all the bids from db and filter bids that are not accepted
- * and map blob to image url and then resolve the bids
- * @returns {promise}
- */
+    /**
+     * @description - fetch all the bids from db and filter bids that are not accepted
+     * and map blob to image url and then resolve the bids
+     * @returns {promise}
+     */
     $scope.getUserBiddings = function () {
       let deferred = $q.defer();
       const userEmail = JSON.parse(sessionStorage.getItem("loginData")).email;
@@ -63,11 +62,10 @@ myApp.controller("userBiddingController", [
         })
         .catch((e) => {
           deferred.reject(e);
-          console.log(e.message);
         });
       return deferred.promise;
     };
 
-    $scope.init();
+    
   },
 ]);

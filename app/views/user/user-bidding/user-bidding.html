@@ -1,5 +1,5 @@
 <user-navbar></user-navbar>
-<div class="container">
+<div class="container" ng-init="init()">
   <!-- Page Heading -->
   <div class="page-heading">
     <h1>Biddings</h1>
@@ -8,33 +8,60 @@
   <div class="filter-sort-container">
     <label for="filter">Filter By:</label>
     <select id="filter" ng-model="selectedFilter">
-      <option ng-repeat="(key, value) in filterBid" value="{{ key }}">{{ value }}</option>
+      <option ng-repeat="(key, value) in filterBid" value="{{ key }}">
+        {{ value }}
+      </option>
     </select>
     <!-- Sort Dropdown -->
     <label for="sort">Sort By:</label>
     <select id="sort" ng-model="selectedSort">
       <option value="timestamp">Recent</option>
-      <option ng-repeat="(key, value) in sortBid" value="car.{{ key }}">{{ value }}</option>
+      <option ng-repeat="(key, value) in sortBid" value="car.{{ key }}">
+        {{ value }}
+      </option>
     </select>
   </div>
-  <!-- Chat List -->
-  <div class="chat-list">
-    <!-- Use ng-repeat to dynamically generate bidding items -->
-    <div class="chat-item" 
-         ng-repeat="bid in biddings | filter: selectedFilter | orderBy: selectedSort">
-      <div class="chat-info">
-        <div class="chat-image">
-          <img ng-src="{{ bid.car.image }}" alt="Car Image">
+  <div class="parent">
+    <!-- Chat List -->
+    <div class="chat-list" ng-hide="isLoading">
+      <!-- Use ng-repeat to dynamically generate bidding items -->
+      <div
+        class="chat-item"
+        ng-repeat="bid in biddings | filter: selectedFilter | orderBy: selectedSort"
+      >
+        <div class="chat-info">
+          <div class="chat-image">
+            <img ng-src="{{ bid.car.image }}" alt="Car Image" />
+          </div>
+          <div class="chat-details">
+            <div class="chat-car">
+              <strong>Car Name:</strong> {{ bid.car.name }}
+            </div>
+            <div class="chat-model">
+              <strong>Model:</strong> {{ bid.car.category }}
+            </div>
+            <div class="chat-base-price">
+              <strong>Base Price:</strong> {{ bid.car.basePrice | currency:"₹"
+              }}
+            </div>
+            <div class="chat-price-km">
+              <strong>Price per Km:</strong> {{ bid.car.pricePerKm |
+              currency:"₹" }}
+            </div>
+            <div class="chat-start-date">
+              <strong>Start Date:</strong> {{ bid.car.startDate |
+              date:'dd-MM-yyyy' }}
+            </div>
+            <div class="chat-end-date">
+              <strong>End Date:</strong> {{ bid.car.endDate | date:'dd-MM-yyyy'
+              }}
+            </div>
+          </div>
         </div>
-        <div class="chat-details">
-          <div class="chat-car"><strong>Car Name:</strong> {{ bid.car.name }}</div>
-          <div class="chat-model"><strong>Model:</strong> {{ bid.car.category }}</div>
-          <div class="chat-base-price"><strong>Base Price:</strong> {{ bid.car.basePrice | currency:"₹" }}</div>
-          <div class="chat-price-km"><strong>Price per Km:</strong> {{ bid.car.pricePerKm | currency:"₹" }}</div>
-          <div class="chat-start-date"><strong>Start Date:</strong> {{ bid.car.startDate | date:'dd-MM-yyyy' }}</div>
-          <div class="chat-end-date"><strong>End Date:</strong> {{ bid.car.endDate | date:'dd-MM-yyyy' }}</div>
-        </div>   
       </div>
+    </div>
+    <div class="child" ng-show="isLoading">
+      <img src="assets\gifs\loader.gif" alt="loader" />
     </div>
   </div>
 </div>

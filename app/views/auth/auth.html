@@ -19,16 +19,6 @@
   <!-- Login Form -->
   <div class="auth-form" ng-show="activeTab === 'login'">
     <form name="loginForm" ng-submit="login()" novalidate>
-      <div class="user-type">
-        <label>
-          <input type="radio" ng-model="loginData.role" value="user" ng-required="true">
-          User
-        </label>
-        <label>
-          <input type="radio" ng-model="loginData.role" value="owner" ng-required="true">
-          Owner
-        </label>
-      </div>
       <label>Email:
         <input type="email" ng-model="loginData.email" placeholder="Enter your email" ng-required="true">
       </label>

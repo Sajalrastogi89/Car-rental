@@ -1,36 +1,41 @@
 
-<link rel="stylesheet" href="app/views/owner/owner-dashboard/owner-dashboard.css"/>
 <owner-navbar></owner-navbar>
 
-<div class="container">
+<div class="container" ng-init="init()">
   <!-- Flex container for title and button -->
   <div class="header-section">
     <h2>Your Cars</h2>
     <a ui-sref="addCar" class="add-car-btn">+ Add Car</a>
   </div>
-  <div class="card-section">
-    <a ng-repeat="car in cars" ui-sref="">
-      <card-component car="car"></card-component>
-    </a>
-    
-    <!-- Pagination Controls -->
-    <div class="pagination">
-      <!-- Previous Page Button -->
-      <button
-        ng-disabled="!isPreviousPageAvailable"
-        ng-click="getNextSetOfCars(currentPageAll-1)"
-      >
-        Previous
-      </button>
-      <!-- Current Page Indicator -->
-      <span> Page {{ currentPageAll + 1 }}</span>
-      <!-- Next Page Button -->
-      <button
-        ng-disabled="!isNextPageAvailable"
-        ng-click="getNextSetOfCars(currentPageAll+1)"
-      >
-        Next
-      </button>
+  <div class="card-parent">
+    <div class="parent">
+      <div class="card-section" ng-hide="isLoading">
+        <div ng-repeat="car in cars" class="car">
+          <card-component car="car"></card-component>
+        </div>
+      </div>
+      <div class="child" ng-show="isLoading">
+        <img src="assets\gifs\loader.gif" alt="loader" />
+      </div>
     </div>
+  </div>
+  <!-- Pagination Controls -->
+  <div class="pagination">
+    <!-- Previous Page Button -->
+    <button
+      ng-disabled="!isPreviousPageAvailable"
+      ng-click="getNextSetOfCars(currentPageAll-1)"
+    >
+      Previous
+    </button>
+    <!-- Current Page Indicator -->
+    <span> Page {{ currentPageAll + 1 }}</span>
+    <!-- Next Page Button -->
+    <button
+      ng-disabled="!isNextPageAvailable"
+      ng-click="getNextSetOfCars(currentPageAll+1)"
+    >
+      Next
+    </button>
   </div>
 </div>

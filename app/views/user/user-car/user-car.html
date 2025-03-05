@@ -1,14 +1,15 @@
 
 <link rel="stylesheet" href="app\views\user\user-car\user-car.css" />
 <user-navbar></user-navbar>
-<div class="container">
+<div class="container" ng-init="init()">
   <!-- Car Name Header -->
   <div class="car-header">
     <h1>{{ car.name }}</h1>
   </div>
 
   <!-- Main Content: Left Details and Right Image with Rating -->
-  <div class="car-content">
+   <div class="parent">
+  <div class="car-content" ng-hide="isLoading">
     <!-- Left Column: Car Details -->
     <div class="details-left">
       <p><strong>Category:</strong> {{ car.category }}</p>
@@ -60,4 +61,8 @@
       <button ng-click="chat(car.owner.firstName,car.owner.email,car)">chat</button>
     </div>
   </div>
+  <div class="child" ng-show="isLoading">
+    <img src="assets\gifs\loader.gif" alt="loader">
+  </div>
+</div>
 </div>

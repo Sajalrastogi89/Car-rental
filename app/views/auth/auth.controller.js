@@ -3,7 +3,8 @@ myApp.controller("AuthController", [
   "$state",
   "IndexedDBService",
   "ToastService",
-  function ($scope, $state, IndexedDBService, ToastService) {
+  "$q",
+  function ($scope, $state, IndexedDBService, ToastService,$q) {
 
     $scope.activeTab = "login"; // set default page as login page
 
@@ -32,17 +33,17 @@ myApp.controller("AuthController", [
             throw new Error("Password is not valid");
           }
           // check selected role
-          if (user.role !== $scope.loginData.role) {
-            console.log(user.role, $scope.loginData.role);
-            throw new Error("Role is not valid");
-          }
+          // if (user.role !== $scope.loginData.role) {
+          //   console.log(user.role, $scope.loginData.role);
+          //   throw new Error("Role is not valid");
+          // }
           // store details inside session storage
           sessionStorage.setItem("loginData", JSON.stringify(user));
           // redirect user according to role
           $state.go(user.role);
         })
         .catch((e) => {
-          ToastService.showToast("error", e.message);
+          ToastService.error(e.message,3000);
         });
     };
 
@@ -66,10 +67,10 @@ myApp.controller("AuthController", [
           return IndexedDBService.addRecord("users", $scope.user);
         })
         .then(() => {
-          ToastService.showToast("success", "User Registered");
+          ToastService.success("User Registered",3000);
         })
-        .catch((error) => {
-          ToastService.showToast("error", "User Already Exists");
+        .catch(() => {
+          ToastService.error("User Already Exists",3000);
         });
     };
 
@@ -79,7 +80,13 @@ myApp.controller("AuthController", [
      * @returns {Promise}
      */
     $scope.checkEmail = function (email) {
-      return IndexedDBService.getRecord("users", email)
+      let deferred=$q.defer();
+      IndexedDBService.getRecord("users", email).then((user)=>{
+        deferred.resolve(user)
+      }).catch((e)=>{
+        deferred.reject(e);
+      })
+      return deferred.promise;
     };
   },
 ]);

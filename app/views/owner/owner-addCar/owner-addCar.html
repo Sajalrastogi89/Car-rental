@@ -1,5 +1,4 @@
-
-<link rel="stylesheet" href="app/views/owner/owner-addCar/owner-addCar.css">
+<link rel="stylesheet" href="app/views/owner/owner-addCar/owner-addCar.css" />
 <owner-navbar></owner-navbar>
 <div class="container">
   <h2>Add Car</h2>
@@ -8,52 +7,93 @@
       <!-- Left Column -->
       <div class="form-group">
         <label>Car Name:</label>
-        <input type="text" class="form-control" ng-model="car.name" required>
+        <input type="text" class="form-control" ng-model="car.name" required />
       </div>
       <div class="form-group">
         <label>Car Category:</label>
-        <select class="form-control" ng-model="car.category" ng-options="category for category in categories" required>
+        <select
+          class="form-control"
+          ng-model="car.category"
+          ng-options="category for category in categories"
+          required
+        >
           <option value="">Select Category</option>
         </select>
       </div>
       <div class="form-group">
         <label>Fuel Type:</label>
-        <select class="form-control" ng-model="car.fuelType" ng-options="fuel for fuel in fuelTypes" required>
+        <select
+          class="form-control"
+          ng-model="car.fuelType"
+          ng-options="fuel for fuel in fuelTypes"
+          required
+        >
           <option value="">Select Fuel Type</option>
         </select>
       </div>
       <div class="form-group">
         <label>Base Price:</label>
-        <input type="number" class="form-control" ng-model="car.basePrice" required>
+        <input
+          type="number"
+          class="form-control"
+          ng-model="car.basePrice"
+          required
+        />
       </div>
-      
+
       <!-- Right Column -->
       <div class="form-group">
         <label>Price per km:</label>
-        <input type="number" class="form-control" ng-model="car.pricePerKm" required>
+        <input
+          type="number"
+          class="form-control"
+          ng-model="car.pricePerKm"
+          required
+        />
       </div>
 
       <div class="form-group">
         <label>Kms travelled:</label>
-        <input type="number" class="form-control" ng-model="car.travelled" required>
+        <input
+          type="number"
+          class="form-control"
+          ng-model="car.travelled"
+          required
+        />
       </div>
 
       <div class="form-group">
         <label>City:</label>
-        <select class="form-control" ng-model="car.city" ng-options="city for city in cities" required>
+        <select
+          class="form-control"
+          ng-model="car.city"
+          ng-options="city for city in cities"
+          required
+        >
           <option value="">Select City</option>
         </select>
       </div>
       <div class="form-group">
         <label>Car Image:</label>
-        <input type="file" ng-model="imageUpload" class="form-control" accept="image/*" onchange="angular.element(this).scope().uploadImage(this)">
+        <input
+          type="file"
+          ng-model="imageUpload"
+          class="form-control"
+          accept="image/*"
+          onchange="angular.element(this).scope().uploadImage(this)"
+        />
       </div>
-      
+
       <!-- Features Section (spanning both columns) -->
       <div class="form-group">
         <label>Features (one per line):</label>
-        <textarea class="form-control" ng-model="car.features" rows="4" required></textarea>
-    </div>
+        <textarea
+          class="form-control"
+          ng-model="car.features"
+          rows="4"
+          required
+        ></textarea>
+      </div>
     </div>
     <button type="submit" class="submit-btn">Add Car</button>
   </form>

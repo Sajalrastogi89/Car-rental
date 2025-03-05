@@ -1,7 +1,6 @@
-myApp
-  .component('cardComponent',{
-    templateUrl: 'app/components/card/card.html',
-    bindings: {
-      car: '='
-    }
-  })
+myApp.component("cardComponent", {
+  templateUrl: "app/components/card/card.html",
+  bindings: {
+    car: "=",
+  },
+});

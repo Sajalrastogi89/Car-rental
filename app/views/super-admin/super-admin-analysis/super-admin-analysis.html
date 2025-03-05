@@ -1,0 +1,60 @@
+
+<div class="container" ng-init="init()">
+  <h1 class="page-title">Super Admin Analytics Dashboard</h1>
+
+  <!-- Loading indicator -->
+  <div class="loader-container" ng-show="isLoading">
+    <img src="assets/gifs/loader.gif" alt="Loading..." class="loader-image" />
+  </div>
+
+  <!-- Analytics content - only shown when not loading -->
+  <div class="analytics-content" ng-hide="isLoading">
+    <!-- User Analytics Section -->
+    <div class="analytics-section">
+      <h2 class="section-title">User Analytics</h2>
+      <div class="chart-row">
+        <div class="chart-container">
+          <h3>Users per Role</h3>
+          <canvas id="usersPerRoleChart"></canvas>
+        </div>
+        <div class="chart-container">
+          <h3>Bid Status Distribution</h3>
+          <canvas id="bidStatusChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Car Distribution Section -->
+    <div class="analytics-section">
+      <h2 class="section-title">Car Distribution Analytics</h2>
+      <div class="chart-row">
+        <div class="chart-container">
+          <h3>Cars per Category</h3>
+          <canvas id="carsPerCategoryChart"></canvas>
+        </div>
+        <div class="chart-container">
+          <h3>Cars per City</h3>
+          <canvas id="carsPerCityChart"></canvas>
+        </div>
+        
+      </div>
+    </div>
+
+    <!-- Technical Analytics Section -->
+    <div class="analytics-section">
+      <h2 class="section-title">Technical Analytics</h2>
+      <div class="chart-row">
+        <div class="chart-container">
+          <h3>Cars per Fuel Type</h3>
+          <canvas id="carsPerFuelTypeChart"></canvas>
+        </div>
+        <div class="chart-container">
+          <h3>Cars Type</h3>
+          <canvas id="luxuryCarsChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    
+  </div>
+</div>

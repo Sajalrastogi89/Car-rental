@@ -12,13 +12,15 @@ myApp.service("chatService", [
      * @returns {Object}
      */
     this.addChat = function (userName,ownerName, owner_id, user_id, car) {
+      let deferred=$q.defer();
       let chatData = {
         user: { email: user_id, name: userName },
         owner: { email: owner_id, name: ownerName },
         car: car
       };
 
-      return IndexedDBService.addRecord("chat", chatData).then((chatId) => {
+      IndexedDBService.addRecord("chat", chatData)
+      .then((chatId) => {
         let messageData = {
           chat_id: chatId, 
           sender: user_id,
@@ -26,11 +28,15 @@ myApp.service("chatService", [
           timestamp: Date.now(),
         };
 
-        return IndexedDBService.addRecord("conversation", messageData)
+       return IndexedDBService.addRecord("conversation", messageData)
+      })
+      .then(()=>{
+        deferred.resolve();
       })
       .catch((e)=>{
-        ToastService.showToast("error",e);
+        deferred.reject(e);
       })
+      return deferred.promise;
     };
 
     /**
@@ -39,8 +45,14 @@ myApp.service("chatService", [
      * @returns array of objects
      */
     this.getChats = function(indexName){
+      let deferred=$q.defer();
       const indexValue=JSON.parse(sessionStorage.getItem('loginData')).email;
-      return IndexedDBService.getRecordsUsingIndex("chat",indexName,indexValue);
+      IndexedDBService.getRecordsUsingIndex("chat",indexName,indexValue).then((allChats)=>{
+        deferred.resolve(allChats);
+      }).catch((e)=>{
+        deferred.reject(e);
+      })
+      return deferred.promise;
     }
 
     /**
@@ -49,7 +61,13 @@ myApp.service("chatService", [
      * @returns array of objects
      */
     this.getSelectedChatData = function(id){
-      return IndexedDBService.getRecordsUsingIndex("conversation","chat_id",id);
+      let deferred=$q.defer();
+      IndexedDBService.getRecordsUsingIndex("conversation","chat_id",id).then((allConversation)=>{
+        deferred.resolve(allConversation);
+      }).catch((e)=>{
+        deferred.reject(e);
+      })
+      return deferred.promise;
     }
 
     /**

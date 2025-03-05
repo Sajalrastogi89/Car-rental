@@ -1,13 +1,12 @@
 myApp.controller("OwnerDashboardController", [
   "$scope",
-  "$rootScope",
-  "IndexedDBService",
   "$q",
   'DashboardService',
-  function ($scope, $rootScope,IndexedDBService,$q,DashboardService) {
+  'ToastService',
+  function ($scope,$q,DashboardService,ToastService) {
     $scope.cars = {}; // declaration and initialization of cars
     $scope.currentPageAll = 0; // current page number for pagination
-    $scope.pageSize = 6; // number of cars fetched in each page
+    $scope.pageSize=8; // number of cars fetched in each page
     $scope.isNextPageAvailable = true; // status for next page
     $scope.isPreviousPageAvailable = false; // status for previous page
 
@@ -15,17 +14,16 @@ myApp.controller("OwnerDashboardController", [
  * @description - runs when page will be loaded
  */
     $scope.init = function(){
-      $rootScope.isLoading = true;
-      $scope.getCars($scope.currentPageAll).then(
+      $scope.isLoading = true;
+      getCars($scope.currentPageAll).then(
         (allCars)=>{
           $scope.cars=allCars;
-          console.log(allCars,12);
         }
       ).catch((e)=>{
-        console.log(e.message);
+        ToastService.error(e,3000);
       }
       ).finally(()=>{
-        $rootScope.isLoading = false;
+        $scope.isLoading = false;
       })
     }
 
@@ -33,9 +31,15 @@ myApp.controller("OwnerDashboardController", [
      * @description - this will fetch owner cars according to current page and page size
      * @param {Number} currentPage 
      */
-    $scope.getCars=function(currentPage) {
+    getCars=function(currentPage) {
+      let deferred=$q.defer();
       const owner_id = JSON.parse(sessionStorage.getItem("loginData")).email;
-      return DashboardService.getCarsData("cars","owner_id",owner_id,$scope.pageSize,currentPage)
+      DashboardService.getCarsData("cars","owner_id",owner_id,$scope.pageSize,currentPage).then((allCars)=>{
+        deferred.resolve(allCars);
+      }).catch((e)=>{
+        deferred.reject(e);
+      })
+      return deferred.promise;
     }
 
 
@@ -44,22 +48,21 @@ myApp.controller("OwnerDashboardController", [
      * page number
      */
     $scope.getNextSetOfCars = function (currentPage) {
-      $scope.currentPageAll = Number(currentPage);
-      console.log("page");
-      $scope
-        .getCars(currentPage)
+      $scope.isLoading=true;
+      $scope.currentPageAll = currentPage;
+      getCars(currentPage)
         .then((car) => {
           $scope.isPreviousPageAvailable = currentPage > 0;
-          $scope.isNextPageAvailable = car.length == 6;
+          $scope.isNextPageAvailable = car.length == 8;
           $scope.cars = car;
-          console.log("page 1");
         })
-        .catch((e) => {
-          ToastService.showToast("Unable to fetch cars", e);
-        });
+        .catch(() => {
+          ToastService.error("Unable to fetch cars", 3000);
+        })
+        .finally(()=>{
+          $scope.isLoading=false;
+        })
     };
-
-    $scope.init();
 
   },
 ]);

@@ -1,5 +1,5 @@
 <owner-navbar></owner-navbar>
-<div class="container">
+<div class="container" ng-init="init()">
   <!-- Page Heading -->
   <div class="page-heading">
     <h1>Bookings</h1>
@@ -13,9 +13,9 @@
       </option>
     </select>
   </div>
-<!-- {{selectedFilter}} -->
-  <!-- Chat List -->
-  <div class="chat-list">
+  
+  <div class="parent">
+  <div class="chat-list" ng-hide="isLoading">
     <div
       class="chat-item"
       ng-repeat="booking in bookings | filter: {paymentStatus: selectedFilter} | orderBy: selectedSort"
@@ -30,7 +30,7 @@
               <strong>Car Name:</strong> {{ booking.car.name }}
             </div>
             <div class="chat-model">
-              <strong>Model:</strong> {{ booking.car.category }}
+              <strong>travelled:</strong> {{ booking.car.travelled }}
             </div>
             <div class="chat-base-price">
               <strong>Base Price:</strong> {{ booking.car.basePrice |
@@ -50,7 +50,10 @@
             </div>
           </div>
         </div>
-        <div class="upload-container" ng-if="booking.car.isCompleted && (!booking.paymentStatus)">
+        <div
+          class="upload-container"
+          ng-if="booking.car.isCompleted && (!booking.paymentStatus)"
+        >
           <label class="upload-label" for="odometer-upload-{{ $index }}"
             >Upload Odometer:</label
           >
@@ -60,11 +63,13 @@
           </button>
         </div>
         <div class="trip-invoice" ng-if="booking.paymentStatus">
-          <button class="invoice" ng-click="openInvoice(booking)">Invoice</button>
+          <button class="invoice" ng-click="openInvoice(booking)">
+            Invoice
+          </button>
           <trip-invoice
-          booking="booking"
-          on-close="closeInvoice(booking)"
-          ng-if="booking.showInvoice"
+            booking="booking"
+            on-close="closeInvoice(booking)"
+            ng-if="booking.showInvoice"
           ></trip-invoice>
         </div>
       </div>
@@ -72,4 +77,8 @@
       <!-- Odometer Upload Field (Vertical Placement) -->
     </div>
   </div>
+  <div class="child" ng-show="isLoading">
+    <img src="assets\gifs\loader.gif" alt="loader" />
+  </div>
+</div>
 </div>

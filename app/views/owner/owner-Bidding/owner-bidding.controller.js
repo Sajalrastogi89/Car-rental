@@ -1,11 +1,10 @@
 myApp.controller("ownerBiddingController", [
   "$scope",
   "IndexedDBService",
-  "$rootScope",
   "$q",
   "BiddingService",
-  function ($scope, IndexedDBService, $rootScope, $q, BiddingService) {
-
+  "ToastService",
+  function ($scope, IndexedDBService, $q, BiddingService,ToastService) {
     $scope.biddings = []; // declaration and initialization of biddings
     $scope.selectedSort = "car.name"; // default value for sorting
 
@@ -13,24 +12,23 @@ myApp.controller("ownerBiddingController", [
      * @description - executes when page loads
      */
     $scope.init = function () {
-      $rootScope.isLoading = true;
+      $scope.isLoading = true;
       $scope
         .getAllBidding()
         .then((allOwnerBiddings) => {
           $scope.biddings = allOwnerBiddings;
-          $rootScope.isLoading = false;
+          $scope.isLoading = false;
         })
         .catch(() => {
-          $rootScope.isLoading = false;
+          $scope.isLoading = false;
         });
     };
 
-
     /**
- * @description - fetch all the bids from db and filter bids that are not accepted
- * and map blob to image url and then resolve the bids
- * @returns {promise}
- */
+     * @description - fetch all the bids from db and filter bids that are not accepted
+     * and map blob to image url and then resolve the bids
+     * @returns {promise}
+     */
     $scope.getAllBidding = function () {
       let deferred = $q.defer();
       const owner_id = JSON.parse(sessionStorage.getItem("loginData")).email;
@@ -54,52 +52,60 @@ myApp.controller("ownerBiddingController", [
       return deferred.promise;
     };
 
-
-
-/**
- * @description - this will update bit status to accepted in database and update car approves field
- * and reject all overlapping bids, then promise will be resolved
- * @param {Object} bid 
- * @returns {Promise}
- */
+    /**
+     * @description - this will update bit status to accepted in database and update car approves field
+     * and reject all overlapping bids, then promise will be resolved
+     * @param {Object} bid
+     * @returns {Promise}
+     */
     $scope.acceptBid = function (bid) {
-      let deferred = $q.defer();
       let updatedBid = {
         id: bid.id,
         status: "accepted",
       };
+    
       IndexedDBService.updateRecord("biddings", updatedBid)
         .then(() => {
           bid.status = "accepted";
-          let updateCarApprovedFeild = {
+    
+          let updateCarApprovedField = {
             id: bid.car.id,
             approved: [
               ...(bid.car.approved || []),
               { startDate: bid.car.startDate, endDate: bid.car.endDate },
             ],
           };
-          BiddingService.updateCarApproved(updateCarApprovedFeild);
+    
+          console.log("Updated Car Approved Field:", updateCarApprovedField);
+    
+          return BiddingService.updateCarApproved(updateCarApprovedField);
+        })
+        .then((approvedBid) => {
+          if (!approvedBid) {
+            throw new Error("Approved bid update failed");
+          }
+          console.log("approvedBid", approvedBid);
+    
           return BiddingService.rejectOverlappingBids(
             bid.car.id,
             bid.car.startDate,
             bid.car.endDate
           );
         })
-        .then((allRejectedBids)=>{
-            $scope.updateBiddingStatusInView(allRejectedBids);
-            deferred.resolve();
+        .then((allRejectedBids) => {
+          console.log("Rejected Bids:", allRejectedBids);
+          updateBiddingStatusInView(allRejectedBids);
         })
-        .catch((e) => {
-          deferred.reject();
+        .catch((error) => {
+          console.error("Error in bid approval:", error);
+          ToastService.error("Bid not approved", 3000);
         });
-      return deferred.promise;
     };
-
-
+    
 
     /**
      * @description - In this bit status is updated to rejected in database
-     * @param {Object} bid 
+     * @param {Object} bid
      */
     $scope.rejectBid = function (bid) {
       let deferred = $q.defer();
@@ -117,22 +123,20 @@ myApp.controller("ownerBiddingController", [
         });
     };
 
-
-/**
- * @description - this function will change all the rejected bids status to rejected in view
- * so that filter will be applied correctly
- * @param {Array of objects} rejectedBids 
- */    
-    $scope.updateBiddingStatusInView = function (rejectedBids) {
-      rejectedBids.forEach(rejectedBid => {
-          let bid = $scope.biddings.find(b => b.id === rejectedBid.id);
-          if (bid) {
-              bid.status = "rejected";
-          }
+    /**
+     * @description - this function will change all the rejected bids status to rejected in view
+     * so that filter will be applied correctly
+     * @param {Array of objects} rejectedBids
+     */
+    updateBiddingStatusInView = function (rejectedBids) {
+      rejectedBids.forEach((rejectedBid) => {
+        let bid = $scope.biddings.find((b) => b.id === rejectedBid.id);
+        if (bid) {
+          bid.status = "rejected";
+        }
       });
-  };
-  
+    };
 
-    $scope.init();
+    
   },
 ]);

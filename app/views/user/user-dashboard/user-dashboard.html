@@ -1,40 +1,43 @@
 <user-navbar></user-navbar>
-<div class="container">
-  <!-- Filter Section -->
-  <div class="filter-section"></div>
-    <!-- City Filter -->
-    <label for="city">Current City:</label>
-    <select
-      id="city"
-      ng-model="selectedCity"
-      ng-options="city for city in cities"
-      ng-change="filterCarUsingSelectedCity()"
-    ></select>
-    
-    <!-- Sort Options -->
-    <label for="sort">Sort By:</label>
-    <select id="sort" ng-model="sortValue">
-      <option value="travelled">Kilometers Travelled</option>
-      <option value="basePrice">Base Price</option>
-      <option value="pricePerKm">Price Per Km</option>
-    </select>
-  
-  
-  <!-- Display Selected City -->
-  <h2>{{selectedCity}} Cars</h2>
+<div class="container" ng-init="init()">
+  <!-- City Filter -->
+  <label for="city">Current City:</label>
+  <select
+    id="city"
+    ng-model="selectedCity"
+    ng-options="city for city in cities"
+    ng-change="filterCarUsingSelectedCity()"
+  ></select>
 
-  <!-- Car Cards Section -->
-  <div class="card-section">
-    <!-- Repeat Car Cards -->
-    <a 
-      ng-repeat="car in carsInSelectedCity | orderBy: sortValue"
-      ui-sref="carDetails({id: car.id})">
-      <card-component
-        car="car"
-      ></card-component>
-    </a>
+  <!-- Sort Options -->
+  <label for="sort">Sort By:</label>
+  <select id="sort" ng-model="sortValue">
+    <option value="travelled">Kilometers Travelled</option>
+    <option value="basePrice">Base Price</option>
+    <option value="pricePerKm">Price Per Km</option>
+  </select>
+
+  <div class="parent">
+    <!-- Display Selected City -->
+    <h2>{{selectedCity}} Cars</h2>
+    <div class="content" ng-hide="isLoading">
+
+      <!-- Car Cards Section -->
+      <div class="card-section">
+        <!-- Repeat Car Cards -->
+        <a
+          ng-repeat="car in carsInSelectedCity | orderBy: sortValue"
+          ui-sref="carDetails({id: car.id})"
+        >
+          <card-component car="car"></card-component>
+        </a>
+      </div>
+    </div>
+    <div class="child" ng-show="isLoading">
+      <img src="assets\gifs\loader.gif" alt="loader" />
+    </div>
   </div>
-  
+
   <!-- Pagination Controls -->
   <div class="pagination">
     <!-- Previous Page Button -->

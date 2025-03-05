@@ -1,0 +1,143 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+.page-title {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.analytics-section {
+  margin-bottom: 40px;
+}
+
+.section-title {
+  font-size: 22px;
+  color: #444;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.chart-row {
+  display: flex;
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+.chart-container {
+  flex: 1;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.chart-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+}
+
+.chart-container h3 {
+  font-size: 18px;
+  color: #555;
+  text-align: center;
+  margin-bottom: 15px;
+  font-weight: 500;
+}
+
+canvas {
+  height: 300px !important;
+}
+
+.chart-row.single .chart-container.full-width {
+  min-width: 100%;
+}
+
+/* Loader styling */
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+}
+
+.loader {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #4BC0C0;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* No data message styling */
+.no-data {
+  text-align: center;
+  padding: 40px;
+  color: #888;
+  font-size: 18px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .chart-row {
+    flex-direction: column;
+  }
+  
+  .chart-container {
+    margin-bottom: 20px;
+  }
+  
+  canvas {
+    height: 250px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .container {
+    padding: 15px 10px;
+  }
+  
+  .page-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .section-title {
+    font-size: 20px;
+  }
+  
+  .chart-container h3 {
+    font-size: 16px;
+  }
+  
+  canvas {
+    height: 200px !important;
+  }
+}
+
+/* Add some color coding for different chart types */
+.finance .chart-container {
+  border-top: 3px solid #4BC0C0;
+}
+
+.used .chart-container {
+  border-top: 3px solid #9966FF;
+}
+
+.chart-container.full-width {
+  border-top: 3px solid #FF9F40;
+}

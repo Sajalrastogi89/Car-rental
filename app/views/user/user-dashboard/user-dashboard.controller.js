@@ -2,14 +2,12 @@ myApp.controller("UserController", [
   "$scope",
   "LocationFactory",
   "ToastService",
-  "$rootScope",
   "$q",
   "DashboardService",
   function (
     $scope,
     LocationFactory,
     ToastService,
-    $rootScope,
     $q,
     DashboardService
   ) {
@@ -45,30 +43,23 @@ myApp.controller("UserController", [
       "Varanasi",
     ];
 
-
-    
-    $scope.selectedCity = "";  // declaration and initialization for selected city
-    $scope.sortValue="basePrice"; // default value for sorting fetched data using orderBy: basePrice
+    $scope.selectedCity = ""; // declaration and initialization for selected city
+    $scope.sortValue = "basePrice"; // default value for sorting fetched data using orderBy: basePrice
     $scope.carsInSelectedCity = []; // declaration and initialization of cars in selected city
     $scope.currentPageAll = 0; // Used in pagination and represents start page number
-    $scope.pageSize = 6; // Numbers of cars in each page
     $scope.isNextPageAvailable = true; // default value for next page availability
     $scope.isPreviousPageAvailable = false; // default value for previous page unavailability
-
-
+    pageSize=8; // Numbers of cars in each page
 
     /**
      * @description fetch current city and then fetch cars in that city using async.waterfall
-     * 
      */
     $scope.init = function () {
-      $rootScope.isLoading = true;
-
+      $scope.isLoading = true;
       async.waterfall(
         [
           function (callback) {
-            $scope
-              .getCurrentCity()
+            getCurrentCity()
               .then((city) => {
                 $scope.selectedCity = city;
                 callback(null, city);
@@ -86,17 +77,15 @@ myApp.controller("UserController", [
         ],
         function (err, result) {
           if (err) {
-            $rootScope.isLoading = false;
-            ToastService.showToast("error", err);
+            $scope.isLoading = false;
+            ToastService.error(err,3000);
           } else {
             $scope.carsInSelectedCity = result;
-            $rootScope.isLoading = false;
+            $scope.isLoading = false;
           }
         }
       );
     };
-
-
 
     /**
      * @description Get cars according to selected city
@@ -106,25 +95,29 @@ myApp.controller("UserController", [
      */
     $scope.getCarsInSelectedCity = function (city, currentPage) {
       const deferred = $q.defer();
-      DashboardService.getCarsData("cars","city",city,$scope.pageSize,currentPage).then((cars)=>{
-        $scope.isPreviousPageAvailable = currentPage > 0;
-        $scope.isNextPageAvailable = cars.length == 6;
-        deferred.resolve(cars);
-      }).catch(
-        (e)=>{
-          deferred.reject(e);
-        }
+      DashboardService.getCarsData(
+        "cars",
+        "city",
+        city,
+        pageSize,
+        currentPage
       )
+        .then((cars) => {
+          $scope.isPreviousPageAvailable = currentPage > 0;
+          $scope.isNextPageAvailable = cars.length == 6;
+          deferred.resolve(cars);
+        })
+        .catch((e) => {
+          deferred.reject(e);
+        });
       return deferred.promise;
     };
-
-
 
     /**
      * @description This function is using location factory to get current city
      * @returns {Promise} - returns a promise that resolves to the current city
      */
-    $scope.getCurrentCity = function () {
+    let getCurrentCity = function () {
       const deferred = $q.defer();
       LocationFactory.getCityUsingGeolocation()
         .then((current) => {
@@ -139,30 +132,31 @@ myApp.controller("UserController", [
       return deferred.promise;
     };
 
-
-
     /**
      * @description - This function is used in pagination for fetching cars in selected city in pages
      * @param {Number} currentPage - This number helps in skipping records using advance operation of indexed db
      */
     $scope.getNextSetOfCars = function (currentPage) {
-      $scope.currentPageAll = Number(currentPage);
+      $scope.isLoading=true;
+      $scope.currentPageAll = currentPage;
       $scope
         .getCarsInSelectedCity($scope.selectedCity, currentPage)
         .then((car) => {
           $scope.carsInSelectedCity = car;
         })
         .catch((e) => {
-          ToastService.showToast("Unable to fetch cars", e);
-        });
+          ToastService.error(e,3000);
+        })
+        .finally(()=>{
+          $scope.isLoading=false;
+        })
     };
-
-
 
     /**
      * @description Filters cars based on the selected city
      */
     $scope.filterCarUsingSelectedCity = function () {
+      $scope.isLoading=true;
       $scope.currentPageAll = 0;
       $scope
         .getCarsInSelectedCity($scope.selectedCity, $scope.currentPageAll)
@@ -170,10 +164,12 @@ myApp.controller("UserController", [
           $scope.carsInSelectedCity = cars;
         })
         .catch((e) => {
-          ToastService.showToast(e.message);
-        });
+          ToastService.error(e.message,3000);
+        })
+        .finally(()=>{
+          $scope.isLoading=false;
+        })
     };
 
-    $scope.init();
   },
 ]);

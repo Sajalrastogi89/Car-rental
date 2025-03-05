@@ -1,6 +1,8 @@
 myApp.controller('ownerProfileController',['$scope','AuthService',function($scope,AuthService){
 
-  $scope.owner=AuthService.getUser(); // fetch owner details
+  $scope.init = function(){
+    $scope.owner=AuthService.getUser(); // fetch owner details
+  }
 
 
   /**
